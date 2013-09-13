@@ -46,6 +46,7 @@ The example requires that the [QUOTE_ADAPTER](https://github.com/Weswit/Lightstr
 ## Similar demo clients that may interest you ##
 
 * [Lightstreamer StockList Demo Client for JavaScript](https://github.com/Weswit/Lightstreamer-example-Stocklist-client-javascript)
+* [Lightstreamer StockList Demo Client for OS X](https://github.com/Weswit/Lightstreamer-example-StockList-client-osx)
 * [Lightstreamer StockList Demo Client for Android](https://github.com/Weswit/Lightstreamer-example-StockList-client-android)
 * [Lightstreamer StockList Demo Client for Microsoft Windows Phone](https://github.com/Weswit/Lightstreamer-example-StockList-client-winphone)
 * [Lightstreamer StockList Demo Client for BlackBerry](https://github.com/Weswit/Lightstreamer-example-StockList-client-blackberry)
