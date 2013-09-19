@@ -7,9 +7,9 @@
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 // http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -45,7 +45,8 @@
 #pragma mark Methods of UIViewController
 
 - (void) loadView {
-	NSArray *niblets= [[NSBundle mainBundle] loadNibNamed:DEVICE_XIB(@"StatusView") owner:self options:NULL];
+    BOOL preiOS7= (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1);
+	NSArray *niblets= [[NSBundle mainBundle] loadNibNamed:(preiOS7 ? DEVICE_XIB(@"StatusView") : DEVICE_XIB(@"StatusView_iOS7")) owner:self options:NULL];
 	_statusView= (StatusView *) [niblets lastObject];
 	
 	self.view= _statusView;

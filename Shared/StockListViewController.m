@@ -7,9 +7,9 @@
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 // http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -91,16 +91,9 @@
 		[infoController release];
 		
 	} else {
-		[UIView beginAnimations:nil context:NULL];
-		
-		[UIView setAnimationDuration:FLIP_DURATION];
-		[UIView setAnimationTransition:UIViewAnimationTransitionFlipFromRight forView:self.navigationController.view cache:YES];
-		
 		InfoViewController *infoController= [[InfoViewController alloc] init];
-		[self.navigationController pushViewController:infoController animated:NO];
+		[self.navigationController pushViewController:infoController animated:YES];
 		[infoController release];
-		
-		[UIView commitAnimations];
 	}
 }
 
@@ -122,16 +115,9 @@
 		[statusController release];
 		
 	} else {
-		[UIView beginAnimations:nil context:NULL];
-		
-		[UIView setAnimationDuration:FLIP_DURATION];
-		[UIView setAnimationTransition:UIViewAnimationTransitionFlipFromRight forView:self.navigationController.view cache:YES];
-		
 		StatusViewController *statusController= [[StatusViewController alloc] init];
-		[self.navigationController pushViewController:statusController animated:NO];
+		[self.navigationController pushViewController:statusController animated:YES];
 		[statusController release];
-		
-		[UIView commitAnimations];
 	}
 }
 
@@ -146,12 +132,22 @@
 	self.tableView= _stockListView.table;
 	self.view= _stockListView;
 	
+    BOOL preiOS7= (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1);
+    _disconnectedIcon= [UIImage imageNamed:(preiOS7 ? @"Dot-red.png" : @"Icon_disconnected.png")];
+    _streamingIcon= [UIImage imageNamed:(preiOS7 ? @"Dot-green.png" : @"Icon_streaming.png")];
+    _pollingIcon= [UIImage imageNamed:(preiOS7 ? @"Dot-cyan.png" : @"Icon_polling.png")];
+    _stalledIcon= [UIImage imageNamed:(preiOS7 ? @"Dot-yellow.png" : @"Icon_stalled.png")];
+    
 	UIBarButtonItem *infoButton= [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Info.png"] style:UIBarButtonItemStylePlain target:self action:@selector(infoTapped)];
 	self.navigationItem.rightBarButtonItem= [infoButton autorelease];
+    if (!preiOS7)
+        infoButton.tintColor= [UIColor whiteColor];
 	
-	UIBarButtonItem *statusButton= [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Dot-red.png"] style:UIBarButtonItemStylePlain target:self action:@selector(statusTapped)];
+	UIBarButtonItem *statusButton= [[UIBarButtonItem alloc] initWithImage:_disconnectedIcon style:UIBarButtonItemStylePlain target:self action:@selector(statusTapped)];
 	self.navigationItem.leftBarButtonItem= [statusButton autorelease];
-
+    if (!preiOS7)
+        statusButton.tintColor= [UIColor whiteColor];
+    
 	[self performSelector:@selector(connectToLightstreamer) withObject:nil afterDelay:1.0];
 }
 
@@ -289,7 +285,8 @@
 }
 
 - (UIView *) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-	NSArray *niblets= [[NSBundle mainBundle] loadNibNamed:DEVICE_XIB(@"StockListSection") owner:self options:NULL];
+    BOOL preiOS7= (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1);
+	NSArray *niblets= [[NSBundle mainBundle] loadNibNamed:(preiOS7 ? DEVICE_XIB(@"StockListSection") : DEVICE_XIB(@"StockListSection_iOS7")) owner:self options:NULL];
 
 	return (UIView *) [niblets lastObject];
 }
@@ -435,7 +432,7 @@
 	_polling= polling;
 	
 	[self.navigationItem.leftBarButtonItem performSelectorOnMainThread:@selector(setImage:)
-															withObject:[UIImage imageNamed:(_polling ? @"Dot-cyan.png" : @"Dot-green.png")]
+															withObject:_polling ? _pollingIcon : _streamingIcon
 														 waitUntilDone:NO];
 	
 	if (!_tableKey)
@@ -447,12 +444,12 @@
 	
 	if (warningStatus) {
 		[self.navigationItem.leftBarButtonItem performSelectorOnMainThread:@selector(setImage:)
-																withObject:[UIImage imageNamed:@"Dot-yellow.png"]
+																withObject:_stalledIcon
 															 waitUntilDone:NO];
 		
 	} else {
 		[self.navigationItem.leftBarButtonItem performSelectorOnMainThread:@selector(setImage:)
-																withObject:[UIImage imageNamed:(_polling ? @"Dot-cyan.png" : @"Dot-green.png")]
+																withObject:_polling ? _pollingIcon : _streamingIcon
 															 waitUntilDone:NO];
 	}
 }
@@ -465,7 +462,7 @@
 	NSLog(@"StockListViewController: Connection closed");
 	
 	[self.navigationItem.leftBarButtonItem performSelectorOnMainThread:@selector(setImage:)
-															withObject:[UIImage imageNamed:@"Dot-red.png"]
+															withObject:_disconnectedIcon
 														 waitUntilDone:NO];
 }
 
@@ -473,7 +470,7 @@
 	NSLog(@"StockListViewController: Connection ended, cause: %d", cause);
 	
 	[self.navigationItem.leftBarButtonItem performSelectorOnMainThread:@selector(setImage:)
-															withObject:[UIImage imageNamed:@"Dot-red.png"]
+															withObject:_disconnectedIcon
 														 waitUntilDone:NO];
 }
 
@@ -485,7 +482,7 @@
 	NSLog(@"StockListViewController: Server failure: %@", failure);
 	
 	[self.navigationItem.leftBarButtonItem performSelectorOnMainThread:@selector(setImage:)
-															withObject:[UIImage imageNamed:@"Dot-red.png"]
+															withObject:_disconnectedIcon
 														 waitUntilDone:NO];
 }
 
@@ -493,7 +490,7 @@
 	NSLog(@"StockListViewController: Connection failure: %@", failure);
 	
 	[self.navigationItem.leftBarButtonItem performSelectorOnMainThread:@selector(setImage:)
-															withObject:[UIImage imageNamed:@"Dot-red.png"]
+															withObject:_disconnectedIcon
 														 waitUntilDone:NO];
 }
 
