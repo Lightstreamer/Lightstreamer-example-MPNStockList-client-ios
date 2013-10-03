@@ -18,7 +18,7 @@
                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="Dot-red.png" id="4">
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="Icon_disconnected.png" id="4">
                     <rect key="frame" x="20" y="50" width="20" height="20"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 </imageView>
@@ -29,7 +29,7 @@
                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="Dot-green.png" id="6">
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="Icon_streaming.png" id="6">
                     <rect key="frame" x="20" y="79" width="20" height="20"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 </imageView>
@@ -40,7 +40,7 @@
                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="Dot-cyan.png" id="8">
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="Icon_polling.png" id="8">
                     <rect key="frame" x="20" y="108" width="20" height="20"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 </imageView>
@@ -51,7 +51,7 @@
                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="Dot-yellow.png" id="10">
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="Icon_stalled.png" id="10">
                     <rect key="frame" x="20" y="137" width="20" height="20"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 </imageView>
@@ -67,9 +67,9 @@
         </view>
     </objects>
     <resources>
-        <image name="Dot-cyan.png" width="20" height="20"/>
-        <image name="Dot-green.png" width="20" height="20"/>
-        <image name="Dot-red.png" width="20" height="20"/>
-        <image name="Dot-yellow.png" width="20" height="20"/>
+        <image name="Icon_disconnected.png" width="20" height="20"/>
+        <image name="Icon_polling.png" width="20" height="20"/>
+        <image name="Icon_stalled.png" width="20" height="20"/>
+        <image name="Icon_streaming.png" width="20" height="20"/>
     </resources>
 </document>

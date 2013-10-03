@@ -15,6 +15,9 @@
 		2860E32E111B888700E27156 /* AppDelegate_iPad.m in Sources */ = {isa = PBXBuildFile; fileRef = 2860E32C111B888700E27156 /* AppDelegate_iPad.m */; };
 		2860E32F111B888700E27156 /* MainWindow_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2860E32D111B888700E27156 /* MainWindow_iPad.xib */; };
 		288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765FC0DF74451002DB57D /* CoreGraphics.framework */; };
+		8C3DC94A17EB273B0006C18D /* Icon StockList Demo 76x76.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CD91C1D17C2531400EC1B94 /* Icon StockList Demo 76x76.png */; };
+		8C3DC94B17EB273B0006C18D /* Icon StockList Demo 120x120.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CD91C1E17C2531400EC1B94 /* Icon StockList Demo 120x120.png */; };
+		8C3DC94C17EB273B0006C18D /* Icon StockList Demo 152x152.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CD91C1F17C2531400EC1B94 /* Icon StockList Demo 152x152.png */; };
 		8C50BEB216650486004595E4 /* Icon StockList Demo 57x57.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C50BEB116650486004595E4 /* Icon StockList Demo 57x57.png */; };
 		8C50BEB416650488004595E4 /* Icon StockList Demo 114x114.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C50BEB316650488004595E4 /* Icon StockList Demo 114x114.png */; };
 		8C50BEB616650493004595E4 /* Icon StockList Demo 72x72.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C50BEB516650493004595E4 /* Icon StockList Demo 72x72.png */; };
@@ -46,6 +49,20 @@
 		8C7A1A3612E4AF8D0019C2A7 /* InfoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C7A1A3512E4AF8D0019C2A7 /* InfoView.m */; };
 		8C7A1A8312E4B5210019C2A7 /* InfoView_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8C7A1A8212E4B5210019C2A7 /* InfoView_iPad.xib */; };
 		8C8616301610BDBE00D6F55F /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C86162F1610BDBE00D6F55F /* Security.framework */; };
+		8C9C99D017C3C4A10008BA3E /* Icon_disconnected.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C9C99C817C3C1790008BA3E /* Icon_disconnected.png */; };
+		8C9C99D117C3C4A10008BA3E /* Icon_disconnected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C9C99C917C3C1790008BA3E /* Icon_disconnected@2x.png */; };
+		8C9C99D217C3C4A10008BA3E /* Icon_polling.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C9C99CA17C3C1790008BA3E /* Icon_polling.png */; };
+		8C9C99D317C3C4A10008BA3E /* Icon_polling@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C9C99CB17C3C1790008BA3E /* Icon_polling@2x.png */; };
+		8C9C99D417C3C4A10008BA3E /* Icon_stalled.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C9C99CC17C3C1790008BA3E /* Icon_stalled.png */; };
+		8C9C99D517C3C4A10008BA3E /* Icon_stalled@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C9C99CD17C3C1790008BA3E /* Icon_stalled@2x.png */; };
+		8C9C99D617C3C4A10008BA3E /* Icon_streaming.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C9C99CE17C3C1790008BA3E /* Icon_streaming.png */; };
+		8C9C99D717C3C4A10008BA3E /* Icon_streaming@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C9C99CF17C3C1790008BA3E /* Icon_streaming@2x.png */; };
+		8CA3C25D17C3A747005598B5 /* StockListSection_iOS7_iPhone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8CA3C25C17C3A747005598B5 /* StockListSection_iOS7_iPhone.xib */; };
+		8CA3C25F17C3A77F005598B5 /* InfoView_iOS7_iPhone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8CA3C25E17C3A77F005598B5 /* InfoView_iOS7_iPhone.xib */; };
+		8CA3C26117C3A78C005598B5 /* StatusView_iOS7_iPhone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8CA3C26017C3A78C005598B5 /* StatusView_iOS7_iPhone.xib */; };
+		8CA3C26317C3A90A005598B5 /* StockListSection_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8CA3C26217C3A90A005598B5 /* StockListSection_iPad.xib */; };
+		8CA3C26517C3A92B005598B5 /* InfoView_iOS7_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8CA3C26417C3A92B005598B5 /* InfoView_iOS7_iPad.xib */; };
+		8CA3C26717C3A937005598B5 /* StatusView_iOS7_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8CA3C26617C3A937005598B5 /* StatusView_iOS7_iPad.xib */; };
 		8CB3C34312EF35CE00A06AE0 /* libLightstreamer_iOS_client.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CB3C34212EF35CE00A06AE0 /* libLightstreamer_iOS_client.a */; };
 		8CC6A4811524C7F7003FB6C0 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CC6A4801524C7F7003FB6C0 /* SystemConfiguration.framework */; };
 		8CD113AD12A01DFC0047C173 /* StockListView_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8CD113AC12A01DFC0047C173 /* StockListView_iPad.xib */; };
@@ -53,7 +70,7 @@
 		8CD113B412A01EEE0047C173 /* StockListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CD113B312A01EEE0047C173 /* StockListViewController.m */; };
 		8CD113B712A01F0D0047C173 /* StockListView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CD113B612A01F0D0047C173 /* StockListView.m */; };
 		8CD113CA12A021DD0047C173 /* StockListCell_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8CD113C912A021DD0047C173 /* StockListCell_iPad.xib */; };
-		8CD113CD12A023640047C173 /* StockListSection_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8CD113CC12A023640047C173 /* StockListSection_iPad.xib */; };
+		8CD113CD12A023640047C173 /* StockListSection_iOS7_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8CD113CC12A023640047C173 /* StockListSection_iOS7_iPad.xib */; };
 		8CD113D012A025F90047C173 /* StockListCell_iPhone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8CD113CF12A025F90047C173 /* StockListCell_iPhone.xib */; };
 		8CD113D312A027390047C173 /* StockListSection_iPhone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8CD113D212A027390047C173 /* StockListSection_iPhone.xib */; };
 		8CD1140F12A02B8F0047C173 /* StockListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CD1140E12A02B8F0047C173 /* StockListCell.m */; };
@@ -109,6 +126,20 @@
 		8C7A1A3512E4AF8D0019C2A7 /* InfoView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = InfoView.m; path = Shared/InfoView.m; sourceTree = "<group>"; };
 		8C7A1A8212E4B5210019C2A7 /* InfoView_iPad.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = InfoView_iPad.xib; sourceTree = "<group>"; };
 		8C86162F1610BDBE00D6F55F /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		8C9C99C817C3C1790008BA3E /* Icon_disconnected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon_disconnected.png; sourceTree = "<group>"; };
+		8C9C99C917C3C1790008BA3E /* Icon_disconnected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon_disconnected@2x.png"; sourceTree = "<group>"; };
+		8C9C99CA17C3C1790008BA3E /* Icon_polling.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon_polling.png; sourceTree = "<group>"; };
+		8C9C99CB17C3C1790008BA3E /* Icon_polling@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon_polling@2x.png"; sourceTree = "<group>"; };
+		8C9C99CC17C3C1790008BA3E /* Icon_stalled.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon_stalled.png; sourceTree = "<group>"; };
+		8C9C99CD17C3C1790008BA3E /* Icon_stalled@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon_stalled@2x.png"; sourceTree = "<group>"; };
+		8C9C99CE17C3C1790008BA3E /* Icon_streaming.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon_streaming.png; sourceTree = "<group>"; };
+		8C9C99CF17C3C1790008BA3E /* Icon_streaming@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon_streaming@2x.png"; sourceTree = "<group>"; };
+		8CA3C25C17C3A747005598B5 /* StockListSection_iOS7_iPhone.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = StockListSection_iOS7_iPhone.xib; sourceTree = "<group>"; };
+		8CA3C25E17C3A77F005598B5 /* InfoView_iOS7_iPhone.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InfoView_iOS7_iPhone.xib; sourceTree = "<group>"; };
+		8CA3C26017C3A78C005598B5 /* StatusView_iOS7_iPhone.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = StatusView_iOS7_iPhone.xib; sourceTree = "<group>"; };
+		8CA3C26217C3A90A005598B5 /* StockListSection_iPad.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = StockListSection_iPad.xib; sourceTree = "<group>"; };
+		8CA3C26417C3A92B005598B5 /* InfoView_iOS7_iPad.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InfoView_iOS7_iPad.xib; sourceTree = "<group>"; };
+		8CA3C26617C3A937005598B5 /* StatusView_iOS7_iPad.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = StatusView_iOS7_iPad.xib; sourceTree = "<group>"; };
 		8CB3C34212EF35CE00A06AE0 /* libLightstreamer_iOS_client.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libLightstreamer_iOS_client.a; path = "Lightstreamer client for iOS/lib/libLightstreamer_iOS_client.a"; sourceTree = "<group>"; };
 		8CC6A4801524C7F7003FB6C0 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		8CD113AC12A01DFC0047C173 /* StockListView_iPad.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = StockListView_iPad.xib; sourceTree = "<group>"; };
@@ -119,11 +150,14 @@
 		8CD113B612A01F0D0047C173 /* StockListView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StockListView.m; path = Shared/StockListView.m; sourceTree = "<group>"; };
 		8CD113B812A021000047C173 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Constants.h; path = Shared/Constants.h; sourceTree = "<group>"; };
 		8CD113C912A021DD0047C173 /* StockListCell_iPad.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = StockListCell_iPad.xib; sourceTree = "<group>"; };
-		8CD113CC12A023640047C173 /* StockListSection_iPad.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = StockListSection_iPad.xib; sourceTree = "<group>"; };
+		8CD113CC12A023640047C173 /* StockListSection_iOS7_iPad.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = StockListSection_iOS7_iPad.xib; sourceTree = "<group>"; };
 		8CD113CF12A025F90047C173 /* StockListCell_iPhone.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = StockListCell_iPhone.xib; sourceTree = "<group>"; };
 		8CD113D212A027390047C173 /* StockListSection_iPhone.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = StockListSection_iPhone.xib; sourceTree = "<group>"; };
 		8CD1140D12A02B8F0047C173 /* StockListCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StockListCell.h; path = Shared/StockListCell.h; sourceTree = "<group>"; };
 		8CD1140E12A02B8F0047C173 /* StockListCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StockListCell.m; path = Shared/StockListCell.m; sourceTree = "<group>"; };
+		8CD91C1D17C2531400EC1B94 /* Icon StockList Demo 76x76.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon StockList Demo 76x76.png"; sourceTree = "<group>"; };
+		8CD91C1E17C2531400EC1B94 /* Icon StockList Demo 120x120.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon StockList Demo 120x120.png"; sourceTree = "<group>"; };
+		8CD91C1F17C2531400EC1B94 /* Icon StockList Demo 152x152.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon StockList Demo 152x152.png"; sourceTree = "<group>"; };
 		8CED1859132FD0AD00F92DFE /* StatusView_iPad.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = StatusView_iPad.xib; sourceTree = "<group>"; };
 		8CED185B132FD1D600F92DFE /* StatusView_iPhone.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = StatusView_iPhone.xib; sourceTree = "<group>"; };
 		8CED185D132FD2FD00F92DFE /* StatusViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StatusViewController.h; path = Shared/StatusViewController.h; sourceTree = "<group>"; };
@@ -167,8 +201,11 @@
 				8CD113AF12A01E600047C173 /* StockListView_iPhone.xib */,
 				8CD113CF12A025F90047C173 /* StockListCell_iPhone.xib */,
 				8CD113D212A027390047C173 /* StockListSection_iPhone.xib */,
+				8CA3C25C17C3A747005598B5 /* StockListSection_iOS7_iPhone.xib */,
 				8C7A1A2212E4ADED0019C2A7 /* InfoView_iPhone.xib */,
+				8CA3C25E17C3A77F005598B5 /* InfoView_iOS7_iPhone.xib */,
 				8CED185B132FD1D600F92DFE /* StatusView_iPhone.xib */,
+				8CA3C26017C3A78C005598B5 /* StatusView_iOS7_iPhone.xib */,
 			);
 			path = iPhone;
 			sourceTree = "<group>";
@@ -181,9 +218,12 @@
 				2860E32D111B888700E27156 /* MainWindow_iPad.xib */,
 				8CD113AC12A01DFC0047C173 /* StockListView_iPad.xib */,
 				8CD113C912A021DD0047C173 /* StockListCell_iPad.xib */,
-				8CD113CC12A023640047C173 /* StockListSection_iPad.xib */,
+				8CA3C26217C3A90A005598B5 /* StockListSection_iPad.xib */,
+				8CD113CC12A023640047C173 /* StockListSection_iOS7_iPad.xib */,
 				8C7A1A8212E4B5210019C2A7 /* InfoView_iPad.xib */,
+				8CA3C26417C3A92B005598B5 /* InfoView_iOS7_iPad.xib */,
 				8CED1859132FD0AD00F92DFE /* StatusView_iPad.xib */,
+				8CA3C26617C3A937005598B5 /* StatusView_iOS7_iPad.xib */,
 			);
 			path = iPad;
 			sourceTree = "<group>";
@@ -239,6 +279,9 @@
 				8C50BEB516650493004595E4 /* Icon StockList Demo 72x72.png */,
 				8C50BEB316650488004595E4 /* Icon StockList Demo 114x114.png */,
 				8C50BEB116650486004595E4 /* Icon StockList Demo 57x57.png */,
+				8CD91C1D17C2531400EC1B94 /* Icon StockList Demo 76x76.png */,
+				8CD91C1E17C2531400EC1B94 /* Icon StockList Demo 120x120.png */,
+				8CD91C1F17C2531400EC1B94 /* Icon StockList Demo 152x152.png */,
 				8D1107310486CEB800E47090 /* StockList_Demo_for_iOS-Info.plist */,
 				32CA4F630368D1EE00C91783 /* StockList_Demo_for_iOS_Prefix.pch */,
 			);
@@ -261,6 +304,14 @@
 		8C1DC8A912AD3B960028E44A /* Graphics */ = {
 			isa = PBXGroup;
 			children = (
+				8C9C99C817C3C1790008BA3E /* Icon_disconnected.png */,
+				8C9C99C917C3C1790008BA3E /* Icon_disconnected@2x.png */,
+				8C9C99CA17C3C1790008BA3E /* Icon_polling.png */,
+				8C9C99CB17C3C1790008BA3E /* Icon_polling@2x.png */,
+				8C9C99CC17C3C1790008BA3E /* Icon_stalled.png */,
+				8C9C99CD17C3C1790008BA3E /* Icon_stalled@2x.png */,
+				8C9C99CE17C3C1790008BA3E /* Icon_streaming.png */,
+				8C9C99CF17C3C1790008BA3E /* Icon_streaming@2x.png */,
 				8C50BEE516650DFD004595E4 /* Arrow-down@2x.png */,
 				8C50BEE616650DFD004595E4 /* Arrow-up@2x.png */,
 				8C50BEC7166507DF004595E4 /* Arrow-down.png */,
@@ -307,8 +358,13 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0430;
+				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = "Weswit srl";
+				TargetAttributes = {
+					1D6058900D05DD3D006BFB54 = {
+						DevelopmentTeam = 7PGFJN8WH5;
+					};
+				};
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "StockList Demo for iOS" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -334,26 +390,39 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8C3DC94A17EB273B0006C18D /* Icon StockList Demo 76x76.png in Resources */,
+				8C3DC94C17EB273B0006C18D /* Icon StockList Demo 152x152.png in Resources */,
+				8C3DC94B17EB273B0006C18D /* Icon StockList Demo 120x120.png in Resources */,
+				8C50BEB616650493004595E4 /* Icon StockList Demo 72x72.png in Resources */,
+				8C50BEB816650495004595E4 /* Icon StockList Demo 144x144.png in Resources */,
+				8C50BEB216650486004595E4 /* Icon StockList Demo 57x57.png in Resources */,
+				8C50BEB416650488004595E4 /* Icon StockList Demo 114x114.png in Resources */,
 				2860E329111B887F00E27156 /* MainWindow_iPhone.xib in Resources */,
 				2860E32F111B888700E27156 /* MainWindow_iPad.xib in Resources */,
 				8CD113AD12A01DFC0047C173 /* StockListView_iPad.xib in Resources */,
 				8CD113B012A01E600047C173 /* StockListView_iPhone.xib in Resources */,
+				8C9C99D717C3C4A10008BA3E /* Icon_streaming@2x.png in Resources */,
 				8CD113CA12A021DD0047C173 /* StockListCell_iPad.xib in Resources */,
-				8CD113CD12A023640047C173 /* StockListSection_iPad.xib in Resources */,
+				8CD113CD12A023640047C173 /* StockListSection_iOS7_iPad.xib in Resources */,
 				8CD113D012A025F90047C173 /* StockListCell_iPhone.xib in Resources */,
 				8CD113D312A027390047C173 /* StockListSection_iPhone.xib in Resources */,
 				8C7A1A2312E4ADED0019C2A7 /* InfoView_iPhone.xib in Resources */,
 				8C7A1A8312E4B5210019C2A7 /* InfoView_iPad.xib in Resources */,
 				8CED185A132FD0AD00F92DFE /* StatusView_iPad.xib in Resources */,
+				8CA3C25D17C3A747005598B5 /* StockListSection_iOS7_iPhone.xib in Resources */,
 				8CED185C132FD1D600F92DFE /* StatusView_iPhone.xib in Resources */,
-				8C50BEB216650486004595E4 /* Icon StockList Demo 57x57.png in Resources */,
-				8C50BEB416650488004595E4 /* Icon StockList Demo 114x114.png in Resources */,
-				8C50BEB616650493004595E4 /* Icon StockList Demo 72x72.png in Resources */,
-				8C50BEB816650495004595E4 /* Icon StockList Demo 144x144.png in Resources */,
+				8C9C99D317C3C4A10008BA3E /* Icon_polling@2x.png in Resources */,
+				8CA3C26717C3A937005598B5 /* StatusView_iOS7_iPad.xib in Resources */,
+				8CA3C26117C3A78C005598B5 /* StatusView_iOS7_iPhone.xib in Resources */,
+				8CA3C26317C3A90A005598B5 /* StockListSection_iPad.xib in Resources */,
+				8C9C99D517C3C4A10008BA3E /* Icon_stalled@2x.png in Resources */,
+				8C9C99D617C3C4A10008BA3E /* Icon_streaming.png in Resources */,
 				8C50BEBA16650594004595E4 /* Default.png in Resources */,
 				8C50BEBC1665059B004595E4 /* Default@2x.png in Resources */,
+				8CA3C25F17C3A77F005598B5 /* InfoView_iOS7_iPhone.xib in Resources */,
 				8C50BEBE1665059E004595E4 /* Default-568h@2x.png in Resources */,
 				8C50BEC0166505AB004595E4 /* Default-Portrait~ipad.png in Resources */,
+				8CA3C26517C3A92B005598B5 /* InfoView_iOS7_iPad.xib in Resources */,
 				8C50BEC2166505B6004595E4 /* Default-Portrait@2x~ipad.png in Resources */,
 				8C50BEC4166505BC004595E4 /* Default-Landscape~ipad.png in Resources */,
 				8C50BEC6166505BF004595E4 /* Default-Landscape@2x~ipad.png in Resources */,
@@ -364,6 +433,7 @@
 				8C50BED8166507DF004595E4 /* Dot-green.png in Resources */,
 				8C50BED9166507DF004595E4 /* Dot-green@2x.png in Resources */,
 				8C50BEDA166507DF004595E4 /* Dot-red.png in Resources */,
+				8C9C99D017C3C4A10008BA3E /* Icon_disconnected.png in Resources */,
 				8C50BEDB166507DF004595E4 /* Dot-red@2x.png in Resources */,
 				8C50BEDC166507DF004595E4 /* Dot-yellow.png in Resources */,
 				8C50BEDD166507DF004595E4 /* Dot-yellow@2x.png in Resources */,
@@ -371,6 +441,9 @@
 				8C50BEDF166507DF004595E4 /* Info@2x.png in Resources */,
 				8C50BEE0166507DF004595E4 /* Lightstreamer.png in Resources */,
 				8C50BEE716650DFD004595E4 /* Arrow-down@2x.png in Resources */,
+				8C9C99D117C3C4A10008BA3E /* Icon_disconnected@2x.png in Resources */,
+				8C9C99D417C3C4A10008BA3E /* Icon_stalled.png in Resources */,
+				8C9C99D217C3C4A10008BA3E /* Icon_polling.png in Resources */,
 				8C50BEE816650DFD004595E4 /* Arrow-up@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -402,10 +475,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = (
-					armv6,
-					"$(ARCHS_STANDARD_32_BIT)",
-				);
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -420,6 +491,7 @@
 					"\"$(SRCROOT)/Lightstreamer client for iOS/lib\"",
 				);
 				OTHER_LDFLAGS = "";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -427,10 +499,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = (
-					armv6,
-					"$(ARCHS_STANDARD_32_BIT)",
-				);
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = StockList_Demo_for_iOS_Prefix.pch;
@@ -443,6 +513,7 @@
 					"\"$(SRCROOT)/Lightstreamer client for iOS/lib\"",
 				);
 				OTHER_LDFLAGS = "";
+				PROVISIONING_PROFILE = "";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -450,19 +521,14 @@
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_C_LANGUAGE_STANDARD = c99;
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = (
-					"\"./Lightstreamer client for iOS/include\"",
-				);
+				HEADER_SEARCH_PATHS = "\"./Lightstreamer client for iOS/include\"";
 				IPHONEOS_DEPLOYMENT_TARGET = 3.1.2;
-				LIBRARY_SEARCH_PATHS = (
-					"\"./Lightstreamer client for iOS/lib\"",
-				);
+				LIBRARY_SEARCH_PATHS = "\"./Lightstreamer client for iOS/lib\"";
+				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "Lightstreamer StockList";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
@@ -473,19 +539,13 @@
 		C01FCF5008A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Weswit Srl (7PGFJN8WH5)";
 				GCC_C_LANGUAGE_STANDARD = c99;
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = (
-					"\"./Lightstreamer client for iOS/include\"",
-				);
+				HEADER_SEARCH_PATHS = "\"./Lightstreamer client for iOS/include\"";
 				IPHONEOS_DEPLOYMENT_TARGET = 3.1.2;
-				LIBRARY_SEARCH_PATHS = (
-					"\"./Lightstreamer client for iOS/lib\"",
-				);
+				LIBRARY_SEARCH_PATHS = "\"./Lightstreamer client for iOS/lib\"";
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PRODUCT_NAME = "Lightstreamer StockList";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "450012C2-E8E0-4461-A7D5-1E8108B555A6";
