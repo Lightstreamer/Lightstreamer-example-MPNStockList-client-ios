@@ -7,7 +7,7 @@ This project contains an example of an application for iPhone and iPad that empl
 <table>
   <tr>
     <td style="text-align: left">
-      &nbsp;<a href="http://itunes.apple.com/us/app/lightstreamer-stocklist/id430328811#" target="_blank"><img src="http://www.lightstreamer.com/img/demo/screen_iphone.png"></a>&nbsp;
+      &nbsp;<a href="http://itunes.apple.com/us/app/lightstreamer-stocklist/id430328811#" target="_blank"><img src="screen_iphone.png"></a>&nbsp;
       
     </td>
     <td>
@@ -58,4 +58,4 @@ The example requires that the [QUOTE_ADAPTER](https://github.com/Weswit/Lightstr
 # Lightstreamer Compatibility Notes #
 
 - Compatible with Lightstreamer iOS Client Library version 1.2 or newer.
-- For Lightstreamer Allegro+, Presto, Vivace.
+- For Lightstreamer Allegro (+ iOS Client API support), Presto, Vivace.
