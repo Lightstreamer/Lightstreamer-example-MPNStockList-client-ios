@@ -66,6 +66,14 @@
 	
 	[_rowsToBeReloaded release];
 	
+    [_disconnectedIcon release];
+    [_streamingIcon release];
+    [_pollingIcon release];
+    [_stalledIcon release];
+	
+	[_infoButton release];
+	[_statusButton release];
+	
 	[super dealloc];
 }
 
@@ -133,20 +141,20 @@
 	self.view= _stockListView;
 	
     BOOL preiOS7= (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1);
-    _disconnectedIcon= [UIImage imageNamed:(preiOS7 ? @"Dot-red.png" : @"Icon_disconnected.png")];
-    _streamingIcon= [UIImage imageNamed:(preiOS7 ? @"Dot-green.png" : @"Icon_streaming.png")];
-    _pollingIcon= [UIImage imageNamed:(preiOS7 ? @"Dot-cyan.png" : @"Icon_polling.png")];
-    _stalledIcon= [UIImage imageNamed:(preiOS7 ? @"Dot-yellow.png" : @"Icon_stalled.png")];
+    _disconnectedIcon= [[UIImage imageNamed:(preiOS7 ? @"Dot-red.png" : @"Icon_disconnected.png")] retain];
+    _streamingIcon= [[UIImage imageNamed:(preiOS7 ? @"Dot-green.png" : @"Icon_streaming.png")] retain];
+    _pollingIcon= [[UIImage imageNamed:(preiOS7 ? @"Dot-cyan.png" : @"Icon_polling.png")] retain];
+    _stalledIcon= [[UIImage imageNamed:(preiOS7 ? @"Dot-yellow.png" : @"Icon_stalled.png")] retain];
     
-	UIBarButtonItem *infoButton= [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Info.png"] style:UIBarButtonItemStylePlain target:self action:@selector(infoTapped)];
-	self.navigationItem.rightBarButtonItem= [infoButton autorelease];
+	_infoButton= [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Info.png"] style:UIBarButtonItemStylePlain target:self action:@selector(infoTapped)];
+	self.navigationItem.rightBarButtonItem= _infoButton;
     if (!preiOS7)
-        infoButton.tintColor= [UIColor whiteColor];
+        _infoButton.tintColor= [UIColor whiteColor];
 	
-	UIBarButtonItem *statusButton= [[UIBarButtonItem alloc] initWithImage:_disconnectedIcon style:UIBarButtonItemStylePlain target:self action:@selector(statusTapped)];
-	self.navigationItem.leftBarButtonItem= [statusButton autorelease];
+	_statusButton= [[UIBarButtonItem alloc] initWithImage:_disconnectedIcon style:UIBarButtonItemStylePlain target:self action:@selector(statusTapped)];
+	self.navigationItem.leftBarButtonItem= _statusButton;
     if (!preiOS7)
-        statusButton.tintColor= [UIColor whiteColor];
+        _statusButton.tintColor= [UIColor whiteColor];
     
 	[self performSelector:@selector(connectToLightstreamer) withObject:nil afterDelay:1.0];
 }
@@ -318,7 +326,8 @@
 #pragma mark Lighstreamer management
 
 - (void) connectToLightstreamer {
-	_client= [[LSClient alloc] init];
+	if (!_client)
+		_client= [[LSClient alloc] init];
 	
 	NSLog(@"StockListViewController: Connecting to Lightstreamer...");
 
@@ -339,22 +348,6 @@
 
 	} @catch (NSException *e) {
 		NSLog(@"StockListViewController: Table subscription failed due to exception: %@", e);
-	}
-}
-
-- (void) unsubscribeItems {
-	NSLog(@"StockListViewController: Unsubscribing table...");
-	
-	@try {
-		[_client unsubscribeTable:_tableKey];
-
-		[_tableKey release];
-		_tableKey= nil;
-		
-		NSLog(@"StockListViewController: Table unsubscribed");
-
-	} @catch (NSException *e) {
-		NSLog(@"StockListViewController: Table unsubscription failed due to exception: %@", e);
 	}
 }
 
@@ -435,6 +428,8 @@
 															withObject:_polling ? _pollingIcon : _streamingIcon
 														 waitUntilDone:NO];
 	
+	// We subscribe, if not already subscribed. The LSClient will reconnect automatically
+	// in most of the cases, so we don't need to resubscribe each time.
 	if (!_tableKey)
         [self subscribeItems];
 }
@@ -464,6 +459,9 @@
 	[self.navigationItem.leftBarButtonItem performSelectorOnMainThread:@selector(setImage:)
 															withObject:_disconnectedIcon
 														 waitUntilDone:NO];
+	
+	// This event is called just by manually closing the connection,
+	// never happens in this example.
 }
 
 - (void) clientConnection:(LSClient *)client didEndWithCause:(int)cause {
@@ -472,6 +470,13 @@
 	[self.navigationItem.leftBarButtonItem performSelectorOnMainThread:@selector(setImage:)
 															withObject:_disconnectedIcon
 														 waitUntilDone:NO];
+	
+	// In this case the session has been closed by the server, the LSClient
+	// will not automatically reconnect. Let's prepare for a new connection.
+	[_tableKey release];
+	_tableKey= nil;
+	
+	[self performSelector:@selector(connectToLightstreamer) withObject:nil afterDelay:1.0];
 }
 
 - (void) clientConnection:(LSClient *)client didReceiveDataError:(LSPushServerException *)error {
@@ -484,6 +489,8 @@
 	[self.navigationItem.leftBarButtonItem performSelectorOnMainThread:@selector(setImage:)
 															withObject:_disconnectedIcon
 														 waitUntilDone:NO];
+	
+	// The LSClient will reconnect automatically in this case.
 }
 
 - (void) clientConnection:(LSClient *)client didReceiveConnectionFailure:(LSPushConnectionException *)failure {
@@ -492,6 +499,8 @@
 	[self.navigationItem.leftBarButtonItem performSelectorOnMainThread:@selector(setImage:)
 															withObject:_disconnectedIcon
 														 waitUntilDone:NO];
+	
+	// The LSClient will reconnect automatically in this case.
 }
 
 - (void) clientConnection:(LSClient *)client isAboutToSendURLRequest:(NSMutableURLRequest *)urlRequest {}

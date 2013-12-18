@@ -48,3 +48,8 @@ Lightstreamer client for iOS/include/LSTableDelegate.h
 Lightstreamer client for iOS/include/LSTableInfo.h
 Lightstreamer client for iOS/include/LSUpdateInfo.h
 libLightstreamer_iOS_client.a
+libLightstreamer_iOS_client_64.a
+Lightstreamer client for iOS/include/LSMPNTokenChangeInfo.h
+Lightstreamer client for iOS/include/LSMPNTokenStatus.h
+Lightstreamer client for iOS/include/LSMPNInfo.h
+Lightstreamer client for iOS/include/LSMPNKey.h

@@ -42,7 +42,10 @@
 	
 	BOOL _polling;
 	
+	UIBarButtonItem *_infoButton;
 	UIPopoverController *_popoverInfoController;
+	
+	UIBarButtonItem *_statusButton;
 	UIPopoverController *_popoverStatusController;
     
     UIImage *_disconnectedIcon;
@@ -64,7 +67,6 @@
 
 - (void) connectToLightstreamer;
 - (void) subscribeItems;
-- (void) unsubscribeItems;
 
 
 #pragma mark -

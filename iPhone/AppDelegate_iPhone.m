@@ -50,14 +50,6 @@
     return YES;
 }
 
-- (void) applicationDidEnterBackground:(UIApplication *)application {
-	[_stockListController unsubscribeItems];
-}
-
-- (void) applicationWillEnterForeground:(UIApplication *)application {
-	[_stockListController subscribeItems];
-}
-
 - (void) dealloc {
 	[_stockListController release];
 	[_navController release];
