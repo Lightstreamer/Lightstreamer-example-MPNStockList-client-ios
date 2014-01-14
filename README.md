@@ -2,20 +2,10 @@
 
 <!-- START DESCRIPTION lightstreamer-example-stocklist-client-ios -->
 
-This project contains an example of an application for iPhone and iPad that employs the Lightstreamer iOS Client library.
+This project contains an example of an application for iPhone and iPad that employs the [Lightstreamer iOS Client library](http://www.lightstreamer.com/docs/client_ios_api/index.html).
 
-<table>
-  <tr>
-    <td style="text-align: left">
-      &nbsp;<a href="http://itunes.apple.com/us/app/lightstreamer-stocklist/id430328811#" target="_blank"><img src="screen_iphone.png"></a>&nbsp;
-      
-    </td>
-    <td>
-      &nbsp;Click here to download and install the application:<br>
-      &nbsp;<a href="http://itunes.apple.com/us/app/lightstreamer-stocklist/id430328811#" target="_blank">http://itunes.apple.com/us/app/lightstreamer-stocklist/id430328811#</a>
-    </td>
-  </tr>
-</table>
+[![screenshot](screen_iphone_large.png)](http://itunes.apple.com/us/app/lightstreamer-stocklist/id430328811#)<br>
+Click here to download and install the application: [http://itunes.apple.com/us/app/lightstreamer-stocklist/id430328811#](http://itunes.apple.com/us/app/lightstreamer-stocklist/id430328811#)<br>
 
 This app, compatible with both iPhone and iPad, is an Objective-C version of the [Stock-List Demos](https://github.com/Weswit/Lightstreamer-example-Stocklist-client-javascript).<br>
 
@@ -40,7 +30,7 @@ The example requires that the [QUOTE_ADAPTER](https://github.com/Weswit/Lightstr
 
 # See Also #
 
-## Lightstreamer Adapters needed by this demo client ##
+## Lightstreamer Adapters Needed by This Demo Client ##
 
 <!-- START RELATED_ENTRIES -->
 * [Lightstreamer - Stock- List Demo - Java Adapter](https://github.com/Weswit/Lightstreamer-example-Stocklist-adapter-java)
@@ -48,7 +38,7 @@ The example requires that the [QUOTE_ADAPTER](https://github.com/Weswit/Lightstr
 
 <!-- END RELATED_ENTRIES -->
 
-## Similar demo clients that may interest you ##
+## Related Projects ##
 
 * [Lightstreamer - Stock-List Demos - HTML Clients](https://github.com/Weswit/Lightstreamer-example-Stocklist-client-javascript)
 * [Lightstreamer - Basic Stock-List Demo - OS X Client](https://github.com/Weswit/Lightstreamer-example-StockList-client-osx)
