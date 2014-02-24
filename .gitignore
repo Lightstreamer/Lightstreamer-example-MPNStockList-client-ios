@@ -53,3 +53,5 @@ Lightstreamer client for iOS/include/LSMPNTokenChangeInfo.h
 Lightstreamer client for iOS/include/LSMPNTokenStatus.h
 Lightstreamer client for iOS/include/LSMPNInfo.h
 Lightstreamer client for iOS/include/LSMPNKey.h
+Lightstreamer client for iOS/include/LSMPNStatus.h
+Lightstreamer client for iOS/include/LSPushClientException.h
