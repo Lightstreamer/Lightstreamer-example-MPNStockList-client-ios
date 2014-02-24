@@ -1,5 +1,5 @@
 //
-//  AppDelegate_iPhone.h
+//  DetailViewController.h
 //  StockList Demo for iOS
 //
 // Copyright 2013 Weswit Srl
@@ -18,30 +18,45 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "StockListAppDelegate.h"
+#import "ChartViewDelegate.h"
 
 
-@class StockListViewController;
+@class DetailView;
+@class ChartViewController;
 
-@interface AppDelegate_iPhone : NSObject <UIApplicationDelegate, StockListAppDelegate> {
-    UIWindow *_window;
-
-	UINavigationController *_navController;
-	StockListViewController *_stockListController;
+@interface DetailViewController : UIViewController <LSTableDelegate, ChartViewDelegate> {
+	DetailView *_detailView;
 	
-	dispatch_queue_t _backgroundQueue;
+	ChartViewController *_chartController;
+	
+	LSSubscribedTableKey *_tableKey;
 
-	BOOL _registrationForMPNSucceeded;
+	dispatch_queue_t _backgroundQueue;
+	
+	NSString *_item;
+	
+	NSMutableDictionary *_itemData;
+	NSMutableDictionary *_itemUpdated;
 }
+
+
+#pragma mark -
+#pragma mark Communication with StockList View Controller
+
+- (void) changeItem:(NSString *)item;
+- (void) updateViewForMPNStatus;
+
+
+#pragma mark -
+#pragma mark User interfaction
+
+- (IBAction) mpnSwitchDidChange;
 
 
 #pragma mark -
 #pragma mark Properties
 
-@property (nonatomic, strong) IBOutlet UIWindow *window;
-@property (nonatomic, readonly) StockListViewController *stockListController;
-@property (nonatomic, readonly) BOOL registrationForMPNSucceeded;
+@property (nonatomic, readonly) NSString *item;
 
 
 @end
-

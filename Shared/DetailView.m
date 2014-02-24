@@ -1,5 +1,5 @@
 //
-//  StockListCell.m
+//  DetailView.m
 //  StockList Demo for iOS
 //
 // Copyright 2013 Weswit Srl
@@ -17,10 +17,10 @@
 // limitations under the License.
 //
 
-#import "StockListCell.h"
+#import "DetailView.h"
 
 
-@implementation StockListCell
+@implementation DetailView
 
 
 #pragma mark -
@@ -44,12 +44,18 @@
 @synthesize timeLabel= _timeLabel;
 @synthesize dirImage= _dirImage;
 @synthesize changeLabel= _changeLabel;
+@synthesize openLabel= _openLabel;
 @synthesize bidLabel= _bidLabel;
 @synthesize askLabel= _askLabel;
+@synthesize bidSizeLabel= _bidSizeLabel;
+@synthesize askSizeLabel= _askSizeLabel;
 @synthesize minLabel= _minLabel;
 @synthesize maxLabel= _maxLabel;
 @synthesize refLabel= _refLabel;
-@synthesize openLabel= _openLabel;
+@synthesize chartTipLabel= _chartTipLabel;
+@synthesize switchTipLabel= _switchTipLabel;
+@synthesize chartBackgroundView= _chartBackgroundView;
+@synthesize mpnSwitch= _mpnSwitch;
 
 
 @end

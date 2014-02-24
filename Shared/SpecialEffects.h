@@ -1,5 +1,5 @@
 //
-//  AppDelegate_iPhone.h
+//  SpecialEffects.h
 //  StockList Demo for iOS
 //
 // Copyright 2013 Weswit Srl
@@ -18,30 +18,16 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "StockListAppDelegate.h"
 
 
-@class StockListViewController;
-
-@interface AppDelegate_iPhone : NSObject <UIApplicationDelegate, StockListAppDelegate> {
-    UIWindow *_window;
-
-	UINavigationController *_navController;
-	StockListViewController *_stockListController;
-	
-	dispatch_queue_t _backgroundQueue;
-
-	BOOL _registrationForMPNSucceeded;
-}
+@interface SpecialEffects : NSObject
 
 
 #pragma mark -
-#pragma mark Properties
+#pragma mark UI element flashing
 
-@property (nonatomic, strong) IBOutlet UIWindow *window;
-@property (nonatomic, readonly) StockListViewController *stockListController;
-@property (nonatomic, readonly) BOOL registrationForMPNSucceeded;
++ (void) flashLabel:(UILabel *)label withColor:(UIColor *)color;
++ (void) flashImage:(UIImageView *)imageView withColor:(UIColor *)color;
 
 
 @end
-

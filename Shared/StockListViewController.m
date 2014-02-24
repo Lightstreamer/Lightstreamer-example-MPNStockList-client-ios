@@ -17,17 +17,52 @@
 // limitations under the License.
 //
 
-#import <QuartzCore/QuartzCore.h>
-#import <LightstreamerClient.h>
 #import "StockListViewController.h"
 #import "StockListView.h"
 #import "StockListCell.h"
+#import "DetailViewController.h"
 #import "InfoViewController.h"
 #import "StatusViewController.h"
+#import "Connector.h"
+#import "Storage.h"
+#import "SpecialEffects.h"
 #import "Constants.h"
+#import "AppDelegate_iPad.h"
+#import "UIAlertView+BlockExtensions.h"
 
-#define SERVER_URL     (@"http://push.lightstreamer.com")
 
+#pragma mark -
+#pragma mark StockListViewController extension
+
+@interface StockListViewController ()
+
+
+#pragma mark -
+#pragma mark User actions
+
+- (void) infoTapped;
+- (void) statusTapped;
+
+
+#pragma mark -
+#pragma mark Lightstreamer connection status management
+
+- (void) connectionStatusChanged;
+- (void) connectionEnded;
+
+
+#pragma mark -
+#pragma mark Internals
+
+- (void) reloadTableRows;
+- (void) appDidBecomeActive;
+
+
+@end
+
+
+#pragma mark -
+#pragma mark StockListViewController implementation
 
 @implementation StockListViewController
 
@@ -37,44 +72,21 @@
 
 - (id) init {
 	if (self = [super init]) {
-		self.title= @"LS StockList";
+		self.title= @"Lightstreamer Stock List";
 		
-		_itemNames= [[NSArray alloc] initWithObjects:ITEMS, nil];
-		_fieldNames= [[NSArray alloc] initWithObjects:FIELDS, nil];
+        // Queue for background execution
+		_backgroundQueue= dispatch_queue_create("backgroundQueue", 0);
 
+		// Multiple-item data structures: each item has a second-level dictionary.
+		// They store fields data and which fields have been updated
 		_itemData= [[NSMutableDictionary alloc] initWithCapacity:NUMBER_OF_ITEMS];
 		_itemUpdated= [[NSMutableDictionary alloc] initWithCapacity:NUMBER_OF_ITEMS];
-		
+
+		// List of rows marked to be reloaded by the table
 		_rowsToBeReloaded= [[NSMutableSet alloc] initWithCapacity:NUMBER_OF_ITEMS];
-        
-		// Uncomment for detailed logging
-//		[LSLog enableSourceType:LOG_SRC_CLIENT];
-//		[LSLog enableSourceType:LOG_SRC_SESSION];
-//		[LSLog enableSourceType:LOG_SRC_STATE_MACHINE];
-//		[LSLog enableSourceType:LOG_SRC_URL_DISPATCHER];
 	}
 	
 	return self;
-}
-
-- (void) dealloc {
-	[_itemNames release];
-	[_fieldNames release];
-	
-	[_itemData release];
-	[_itemUpdated release];
-	
-	[_rowsToBeReloaded release];
-	
-    [_disconnectedIcon release];
-    [_streamingIcon release];
-    [_pollingIcon release];
-    [_stalledIcon release];
-	
-	[_infoButton release];
-	[_statusButton release];
-	
-	[super dealloc];
 }
 
 
@@ -83,12 +95,21 @@
 
 - (void) infoTapped {
 	if (DEVICE_IPAD) {
-		if (_popoverInfoController)
-			return;
 		
-		if (_popoverStatusController)
+		// If the Info popover is open close it
+		if (_popoverInfoController) {
+            [_popoverInfoController dismissPopoverAnimated:YES];
+            _popoverInfoController= nil;
 			return;
+        }
+		
+		// If the Status popover is open close it
+		if (_popoverStatusController) {
+			[_popoverStatusController dismissPopoverAnimated:YES];
+            _popoverStatusController= nil;
+        }
 
+		// Open the Info popover
 		InfoViewController *infoController= [[InfoViewController alloc] init];
 		_popoverInfoController= [[UIPopoverController alloc] initWithContentViewController:infoController];
 		
@@ -96,23 +117,30 @@
 		_popoverInfoController.delegate= self;
 		
 		[_popoverInfoController presentPopoverFromBarButtonItem:self.navigationItem.rightBarButtonItem permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
-		[infoController release];
 		
 	} else {
 		InfoViewController *infoController= [[InfoViewController alloc] init];
 		[self.navigationController pushViewController:infoController animated:YES];
-		[infoController release];
 	}
 }
 
 - (void) statusTapped {
 	if (DEVICE_IPAD) {
-		if (_popoverStatusController)
-			return;
 		
-		if (_popoverInfoController)
+		// If the Status popover is open close it
+		if (_popoverStatusController) {
+            [_popoverStatusController dismissPopoverAnimated:YES];
+            _popoverStatusController= nil;
 			return;
+        }
+		
+		// If the Info popover is open close it
+		if (_popoverInfoController) {
+            [_popoverInfoController dismissPopoverAnimated:YES];
+            _popoverInfoController= nil;
+        }
 
+		// Open the Status popover
 		StatusViewController *statusController= [[StatusViewController alloc] init];
 		_popoverStatusController= [[UIPopoverController alloc] initWithContentViewController:statusController];
 		
@@ -120,12 +148,10 @@
 		_popoverStatusController.delegate= self;
 		
 		[_popoverStatusController presentPopoverFromBarButtonItem:self.navigationItem.leftBarButtonItem permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
-		[statusController release];
 		
 	} else {
 		StatusViewController *statusController= [[StatusViewController alloc] init];
 		[self.navigationController pushViewController:statusController animated:YES];
-		[statusController release];
 	}
 }
 
@@ -140,27 +166,43 @@
 	self.tableView= _stockListView.table;
 	self.view= _stockListView;
 	
-    BOOL preiOS7= (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1);
-    _disconnectedIcon= [[UIImage imageNamed:(preiOS7 ? @"Dot-red.png" : @"Icon_disconnected.png")] retain];
-    _streamingIcon= [[UIImage imageNamed:(preiOS7 ? @"Dot-green.png" : @"Icon_streaming.png")] retain];
-    _pollingIcon= [[UIImage imageNamed:(preiOS7 ? @"Dot-cyan.png" : @"Icon_polling.png")] retain];
-    _stalledIcon= [[UIImage imageNamed:(preiOS7 ? @"Dot-yellow.png" : @"Icon_stalled.png")] retain];
-    
 	_infoButton= [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Info.png"] style:UIBarButtonItemStylePlain target:self action:@selector(infoTapped)];
+    _infoButton.tintColor= [UIColor whiteColor];
 	self.navigationItem.rightBarButtonItem= _infoButton;
-    if (!preiOS7)
-        _infoButton.tintColor= [UIColor whiteColor];
 	
-	_statusButton= [[UIBarButtonItem alloc] initWithImage:_disconnectedIcon style:UIBarButtonItemStylePlain target:self action:@selector(statusTapped)];
+	_statusButton= [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Icon_disconnected.png"] style:UIBarButtonItemStylePlain target:self action:@selector(statusTapped)];
+    _statusButton.tintColor= [UIColor whiteColor];
 	self.navigationItem.leftBarButtonItem= _statusButton;
-    if (!preiOS7)
-        _statusButton.tintColor= [UIColor whiteColor];
-    
-	[self performSelector:@selector(connectToLightstreamer) withObject:nil afterDelay:1.0];
+	
+	self.navigationController.delegate= self;
+	
+	if (DEVICE_IPAD) {
+		
+		// On the iPad we preselect the first row,
+		// since the detail view is always visible
+		_selectedRow= [NSIndexPath indexPathForRow:0 inSection:0];
+		_detailController= [(AppDelegate_iPad *) [[UIApplication sharedApplication] delegate] detailController];
+	}
+	
+	// We use the notification center to know when the
+	// connection changes status
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connectionStatusChanged) name:NOTIFICATION_CONN_STATUS object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connectionEnded) name:NOTIFICATION_CONN_ENDED object:nil];
+	
+	// We use the notification center also to know when the app wakes up
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appDidBecomeActive) name:UIApplicationDidBecomeActiveNotification object:nil];
+	
+    // Start connection in background
+	dispatch_async(_backgroundQueue, ^() {
+		[[Connector sharedConnector] connect];
+	});
 }
 
 - (BOOL) shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-	return YES;
+	if (DEVICE_IPAD)
+		return UIInterfaceOrientationIsLandscape(interfaceOrientation);
+	else
+		return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
 - (BOOL) shouldAutorotate {
@@ -168,7 +210,10 @@
 }
 
 - (NSUInteger) supportedInterfaceOrientations {
-	return UIInterfaceOrientationMaskAll;
+	if (DEVICE_IPAD)
+		return UIInterfaceOrientationMaskLandscape;
+	else
+		return UIInterfaceOrientationMaskPortrait;
 }
 
 
@@ -184,12 +229,15 @@
 }
 
 - (UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+	
+	// Prepare the table cell
     StockListCell *cell= (StockListCell *) [tableView dequeueReusableCellWithIdentifier:@"StockListCell"];
     if (!cell) {
 		NSArray *niblets= [[NSBundle mainBundle] loadNibNamed:DEVICE_XIB(@"StockListCell") owner:self options:NULL];
 		cell= (StockListCell *) [niblets lastObject];
     }
 
+	// Retrieve the item's data structures
 	NSMutableDictionary *item= nil;
 	NSMutableDictionary *itemUpdated= nil;
 	@synchronized (_itemData) {
@@ -198,6 +246,8 @@
 	}
 	
 	if (item) {
+		
+		// Update the cell appropriately
 		NSString *colorName= [item objectForKey:@"color"];
 		UIColor *color= nil;
 		if ([colorName isEqualToString:@"green"])
@@ -209,19 +259,25 @@
 		
 		cell.nameLabel.text= [item objectForKey:@"stock_name"];
 		if ([[itemUpdated objectForKey:@"stock_name"] boolValue]) {
-			[self flashLabel:cell.nameLabel withColor:color];
+			if (!_stockListView.table.dragging)
+				[SpecialEffects flashLabel:cell.nameLabel withColor:color];
+
 			[itemUpdated setObject:[NSNumber numberWithBool:NO] forKey:@"stock_name"];
 		}
 		
 		cell.lastLabel.text= [item objectForKey:@"last_price"];
 		if ([[itemUpdated objectForKey:@"last_price"] boolValue]) {
-			[self flashLabel:cell.lastLabel withColor:color];
+			if (!_stockListView.table.dragging)
+				[SpecialEffects flashLabel:cell.lastLabel withColor:color];
+			
 			[itemUpdated setObject:[NSNumber numberWithBool:NO] forKey:@"last_price"];
 		}
 
 		cell.timeLabel.text= [item objectForKey:@"time"];
 		if ([[itemUpdated objectForKey:@"time"] boolValue]) {
-			[self flashLabel:cell.timeLabel withColor:color];
+			if (!_stockListView.table.dragging)
+				[SpecialEffects flashLabel:cell.timeLabel withColor:color];
+			
 			[itemUpdated setObject:[NSNumber numberWithBool:NO] forKey:@"time"];
 		}
 
@@ -234,51 +290,28 @@
 			cell.dirImage.image= nil;
 
 		cell.changeLabel.text= [NSString stringWithFormat:@"%@%%", [item objectForKey:@"pct_change"]];
-		cell.changeLabel.textColor= (([[item objectForKey:@"pct_change"] doubleValue] >= 0.0) ? DK_GREEN_COLOR : RED_COLOR);
+		cell.changeLabel.textColor= (([[item objectForKey:@"pct_change"] doubleValue] >= 0.0) ? DARK_GREEN_COLOR : RED_COLOR);
 
 		if ([[itemUpdated objectForKey:@"pct_change"] boolValue]) {
-			[self flashImage:cell.dirImage withColor:color];
-			[self flashLabel:cell.changeLabel withColor:color];
+			if (!_stockListView.table.dragging) {
+				[SpecialEffects flashImage:cell.dirImage withColor:color];
+				[SpecialEffects flashLabel:cell.changeLabel withColor:color];
+			}
+			
 			[itemUpdated setObject:[NSNumber numberWithBool:NO] forKey:@"pct_change"];
 		}
-		
-		cell.refLabel.text= [item objectForKey:@"ref_price"];
-		if ([[itemUpdated objectForKey:@"ref_price"] boolValue]) {
-			[self flashLabel:cell.refLabel withColor:color];
-			[itemUpdated setObject:[NSNumber numberWithBool:NO] forKey:@"ref_price"];
-		}
-		
-		if (DEVICE_IPAD) {
-			cell.minLabel.text= [item objectForKey:@"min"];
-			if ([[itemUpdated objectForKey:@"min"] boolValue]) {
-				[self flashLabel:cell.minLabel withColor:color];
-				[itemUpdated setObject:[NSNumber numberWithBool:NO] forKey:@"min"];
-			}
-			
-			cell.maxLabel.text= [item objectForKey:@"max"];
-			if ([[itemUpdated objectForKey:@"max"] boolValue]) {
-				[self flashLabel:cell.maxLabel withColor:color];
-				[itemUpdated setObject:[NSNumber numberWithBool:NO] forKey:@"max"];
-			}
-			
-			cell.bidLabel.text= [item objectForKey:@"bid"];
-			if ([[itemUpdated objectForKey:@"bid"] boolValue]) {
-				[self flashLabel:cell.bidLabel withColor:color];
-				[itemUpdated setObject:[NSNumber numberWithBool:NO] forKey:@"bid"];
-			}
-
-			cell.askLabel.text= [item objectForKey:@"ask"];
-			if ([[itemUpdated objectForKey:@"ask"] boolValue]) {
-				[self flashLabel:cell.askLabel withColor:color];
-				[itemUpdated setObject:[NSNumber numberWithBool:NO] forKey:@"ask"];
-			}
-
-			cell.openLabel.text= [item objectForKey:@"open_price"];
-			if ([[itemUpdated objectForKey:@"open_price"] boolValue]) {
-				[self flashLabel:cell.openLabel withColor:color];
-				[itemUpdated setObject:[NSNumber numberWithBool:NO] forKey:@"open_price"];
-			}
-		}
+	}
+	
+	// Update the cell text colors appropriately
+	if ([indexPath isEqual:_selectedRow]) {
+		cell.nameLabel.textColor= SELECTED_TEXT_COLOR;
+		cell.lastLabel.textColor= SELECTED_TEXT_COLOR;
+		cell.timeLabel.textColor= SELECTED_TEXT_COLOR;
+	
+	} else {
+		cell.nameLabel.textColor= DEFAULT_TEXT_COLOR;
+		cell.lastLabel.textColor= DEFAULT_TEXT_COLOR;
+		cell.timeLabel.textColor= DEFAULT_TEXT_COLOR;
 	}
     
     return cell;
@@ -289,18 +322,49 @@
 #pragma mark Methods of UITableViewDelegate
 
 - (NSIndexPath *) tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+	
+	// Mark the row to be reloaded
+	@synchronized (_rowsToBeReloaded) {
+		if (_selectedRow)
+			[_rowsToBeReloaded addObject:_selectedRow];
+		
+		[_rowsToBeReloaded addObject:indexPath];
+	}
+	
+	_selectedRow= indexPath;
+
+	// Update the table view
+	[self reloadTableRows];
+	
+	// On the iPhone the Detail View Controller is created on demand and pushed with
+	// the navigation controller
+	if (!_detailController)
+		_detailController= [[DetailViewController alloc] init];
+
+	// Update the item on the detail controller
+	[_detailController changeItem:[TABLE_ITEMS objectAtIndex:indexPath.row]];
+	
+	if (!DEVICE_IPAD) {
+		
+		// On the iPhone the detail view controller may be already visible if
+		// we are handling an MPN, if it is not just push it
+		if ([self.navigationController.viewControllers count] == 1)
+			[self.navigationController pushViewController:_detailController animated:YES];
+	}
+	
 	return nil;
 }
 
 - (UIView *) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    BOOL preiOS7= (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1);
-	NSArray *niblets= [[NSBundle mainBundle] loadNibNamed:(preiOS7 ? DEVICE_XIB(@"StockListSection") : DEVICE_XIB(@"StockListSection_iOS7")) owner:self options:NULL];
+	NSArray *niblets= [[NSBundle mainBundle] loadNibNamed:DEVICE_XIB(@"StockListSection") owner:self options:NULL];
 
 	return (UIView *) [niblets lastObject];
 }
 
 - (void) tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-	if (indexPath.row % 2 == 0)
+	if ([indexPath isEqual:_selectedRow])
+		cell.backgroundColor= SELECTED_ROW_COLOR;
+	else if (indexPath.row % 2 == 0)
 		cell.backgroundColor= LIGHT_ROW_COLOR;
 	else
 		cell.backgroundColor= DARK_ROW_COLOR;
@@ -312,43 +376,168 @@
 
 - (void) popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
 	if (popoverController == _popoverInfoController) {
-		[_popoverInfoController release];
 		_popoverInfoController= nil;
 	
 	} else if (popoverController == _popoverStatusController) {
-		[_popoverStatusController release];
 		_popoverStatusController= nil;
 	}
 }
 
 
 #pragma mark -
-#pragma mark Lighstreamer management
+#pragma mark Methods of UINavigationControllerDelegate
 
-- (void) connectToLightstreamer {
-	if (!_client)
-		_client= [[LSClient alloc] init];
-	
-	NSLog(@"StockListViewController: Connecting to Lightstreamer...");
-
-	LSConnectionInfo *connectionInfo= [LSConnectionInfo connectionInfoWithPushServerURL:SERVER_URL pushServerControlURL:nil user:nil password:nil adapter:@"DEMO"];
-	[_client openConnectionWithInfo:connectionInfo delegate:self];
+- (void) navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
+	if (!DEVICE_IPAD) {
+		
+		// Remove selection when coming back from detail view
+		if (viewController == self) {
+			
+			// Mark the row to be reloaded
+			@synchronized (_rowsToBeReloaded) {
+				if (_selectedRow)
+					[_rowsToBeReloaded addObject:_selectedRow];
+			}
+			
+			_selectedRow= nil;
+			
+			// Update the table view
+			[self reloadTableRows];
+		}
+	}
 }
 
-- (void) subscribeItems {
-	NSLog(@"StockListViewController: Subscribing table...");
+#pragma mark -
+#pragma mark Lighstreamer connection status management
 
-	@try {
-		LSExtendedTableInfo *tableInfo= [LSExtendedTableInfo extendedTableInfoWithItems:_itemNames mode:LSModeMerge fields:_fieldNames dataAdapter:@"QUOTE_ADAPTER" snapshot:YES];
-		tableInfo.requestedMaxFrequency= 1.0;
+- (void) connectionStatusChanged {
+	// This method is always called from a background thread
 
-		_tableKey= [[_client subscribeTableWithExtendedInfo:tableInfo delegate:self useCommandLogic:NO] retain];
+	// Check if we need to subscribe
+	BOOL needSubscription= ((!_subscribed) && [[[Connector sharedConnector] client] isConnected]);
 
-		NSLog(@"StockListViewController: Table subscribed");
+	dispatch_async(dispatch_get_main_queue(), ^{
+		
+		// Update connection status icon
+		switch ([[[Connector sharedConnector] client] connectionStatus]) {
+			case LSConnectionStatusDisconnected:
+				self.navigationItem.leftBarButtonItem.image= [UIImage imageNamed:@"Icon_disconnected.png"];
+				break;
+				
+			case LSConnectionStatusConnecting:
+				self.navigationItem.leftBarButtonItem.image= [UIImage imageNamed:@"Icon_connecting.png"];
+				break;
 
-	} @catch (NSException *e) {
-		NSLog(@"StockListViewController: Table subscription failed due to exception: %@", e);
+			case LSConnectionStatusStalled:
+				self.navigationItem.leftBarButtonItem.image= [UIImage imageNamed:@"Icon_stalled.png"];
+				break;
+				
+			case LSConnectionStatusConnectedInPollingMode:
+				self.navigationItem.leftBarButtonItem.image= [UIImage imageNamed:@"Icon_polling.png"];
+				break;
+				
+			case LSConnectionStatusConnectedInStreamingMode:
+				self.navigationItem.leftBarButtonItem.image= [UIImage imageNamed:@"Icon_streaming.png"];
+				break;
+		}
+		
+		// If the detail controller is visible, set the item on the detail view controller,
+		// so that it can do its own subscription
+		if (needSubscription && (DEVICE_IPAD || ([self.navigationController.viewControllers count] > 1)))
+			[_detailController changeItem:[TABLE_ITEMS objectAtIndex:_selectedRow.row]];
+	});
+	
+	// Check if we need to subscribe
+	if (needSubscription) {
+		_subscribed= YES;
+
+		// Subscribe the table on a background thread
+		dispatch_async(_backgroundQueue, ^() {
+			NSLog(@"StockListViewController: subscribing table...");
+			
+			@try {
+				
+				// The LSClient will reconnect and resubscribe automatically
+				LSExtendedTableInfo *tableInfo= [LSExtendedTableInfo extendedTableInfoWithItems:TABLE_ITEMS
+																						   mode:LSModeMerge
+																						 fields:LIST_FIELDS
+																					dataAdapter:DATA_ADAPTER
+																					   snapshot:YES];
+				
+				_tableKey= [[[Connector sharedConnector] client] subscribeTableWithExtendedInfo:tableInfo
+																					   delegate:self
+																				useCommandLogic:NO];
+				
+				NSLog(@"StockListViewController: table subscribed");
+				
+			} @catch (NSException *e) {
+				NSLog(@"StockListViewController: table subscription failed with to exception: %@", e);
+			}
+		});
 	}
+}
+
+- (void) connectionEnded {
+	// This method is always called from a background thread
+	
+	// Connection was forcibly closed by the server,
+	// prepare for a new subscription
+	_subscribed= NO;
+	_tableKey= nil;
+	
+    // Start a new connection in background
+	dispatch_async(_backgroundQueue, ^() {
+		[[Connector sharedConnector] connect];
+	});
+}
+
+
+#pragma mark -
+#pragma mark Communication with App delegate
+
+- (void) handleMPN:(NSDictionary *)mpn {
+	// This method is always called from the main thread
+	
+	// Extract MPN content (the subscription ID is filled
+	// only for notifications coming from a threshold)
+	NSString *item= [mpn objectForKey:@"item"];
+	NSString *subscriptionId= [mpn objectForKey:@"subscriptionId"];
+	NSDictionary *aps= [mpn objectForKey:@"aps"];
+	NSDictionary *alert= [aps objectForKey:@"alert"];
+	NSString *body= [alert objectForKey:@"body"];
+
+	// Check the item is valid
+	int index= [TABLE_ITEMS indexOfObject:item];
+	if (index == NSNotFound)
+		return;
+		
+	// Check if we are watching this item or another one
+	BOOL itemIsSelected= (_selectedRow && (_selectedRow.row == index));
+
+	// Reload thresholds if necessary: if we are already watching this
+	// item, this avoids a call to a changeItem on the detail controller,
+	// which would clear the chart
+	if (itemIsSelected && subscriptionId)
+		[_detailController updateViewForMPNStatus];
+	
+	// Add View and Skip buttons if the item is not currently selected
+	[[[UIAlertView alloc] initWithTitle:@"MPN Notification"
+								message:body
+						completionBlock:^(NSUInteger buttonIndex, UIAlertView *alertView) {
+							switch (buttonIndex) {
+								case 0:
+									break;
+									 
+								case 1:
+									 
+									// Replicate the effect of a user tap on the appropriate cell,
+									// will end up in a call to changeItem on the detail controller
+									[self tableView:_stockListView.table willSelectRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+									break;
+							}
+						}
+					  cancelButtonTitle:(itemIsSelected ? @"Ok" : @"Skip")
+					  otherButtonTitles:(itemIsSelected ? nil : @"View"), nil] show];
 }
 
 
@@ -356,6 +545,8 @@
 #pragma mark Internals
 
 - (void) reloadTableRows {
+	// This method is always called from the main thread
+
 	NSMutableArray *rowsToBeReloaded= nil;
 	@synchronized (_rowsToBeReloaded) {
 		rowsToBeReloaded= [[NSMutableArray alloc] initWithCapacity:[_rowsToBeReloaded count]];
@@ -366,167 +557,48 @@
 		[_rowsToBeReloaded removeAllObjects];
 	}
 	
-	[_stockListView.table reloadRowsAtIndexPaths:[rowsToBeReloaded autorelease] withRowAnimation:UITableViewRowAnimationNone];
+	// Ask the table to reload the marked rows
+	[_stockListView.table reloadRowsAtIndexPaths:rowsToBeReloaded withRowAnimation:UITableViewRowAnimationNone];
 }
 
-
-#pragma mark -
-#pragma mark Special effects
-
-- (void) flashLabel:(UILabel *)label withColor:(UIColor *)color {
-	if (_stockListView.table.dragging)
-		return;
+- (void) appDidBecomeActive {
+	// This method is always called from the main thread
 	
-	label.layer.backgroundColor= color.CGColor;
-	if (label.tag == COLORED_LABEL_TAG) 
-		label.textColor= [UIColor blackColor];
+	// Check if there's a selection and the detail controller is visible
+	if (_selectedRow && (DEVICE_IPAD || ([[self.navigationController viewControllers] count] > 1))) {
 	
-	[self performSelector:@selector(unflashLabel:) withObject:label afterDelay:FLASH_DURATION];
-}
-
-- (void) unflashLabel:(UILabel *)label {
-	[UIView beginAnimations:nil context:NULL];
-	[UIView setAnimationCurve:UIViewAnimationCurveEaseIn];
-	[UIView setAnimationDuration:FLASH_DURATION];
-	
-	label.layer.backgroundColor= [UIColor clearColor].CGColor;
-	if (label.tag == COLORED_LABEL_TAG) 
-		label.textColor= (([label.text doubleValue] >= 0.0) ? DK_GREEN_COLOR : RED_COLOR);
-	
-	[UIView commitAnimations];
-}
-
-- (void) flashImage:(UIImageView *)imageView withColor:(UIColor *)color {
-	if (_stockListView.table.dragging)
-		return;
-
-	imageView.backgroundColor= color;
-	
-	[self performSelector:@selector(unflashImage:) withObject:imageView afterDelay:FLASH_DURATION];
-}
-
-- (void) unflashImage:(UIImageView *)imageView {
-	[UIView beginAnimations:nil context:NULL];
-	[UIView setAnimationCurve:UIViewAnimationCurveEaseIn];
-	[UIView setAnimationDuration:FLASH_DURATION];
-	
-	imageView.backgroundColor= [UIColor clearColor];
-	
-	[UIView commitAnimations];
-}
-
-
-#pragma mark -
-#pragma mark Methods of LSConnectionDelegate
-
-- (void) clientConnection:(LSClient *)client didStartSessionWithPolling:(BOOL)polling {
-	NSLog(@"StockListViewController: Session started with polling: %@", (polling ? @"YES" : @"NO"));
-	
-	_polling= polling;
-	
-	[self.navigationItem.leftBarButtonItem performSelectorOnMainThread:@selector(setImage:)
-															withObject:_polling ? _pollingIcon : _streamingIcon
-														 waitUntilDone:NO];
-	
-	// We subscribe, if not already subscribed. The LSClient will reconnect automatically
-	// in most of the cases, so we don't need to resubscribe each time.
-	if (!_tableKey)
-        [self subscribeItems];
-}
-
-- (void) clientConnection:(LSClient *)client didChangeActivityWarningStatus:(BOOL)warningStatus {
-	NSLog(@"StockListViewController: Activity warning status changed: %@", (warningStatus ? @"ON" : @"OFF"));
-	
-	if (warningStatus) {
-		[self.navigationItem.leftBarButtonItem performSelectorOnMainThread:@selector(setImage:)
-																withObject:_stalledIcon
-															 waitUntilDone:NO];
-		
-	} else {
-		[self.navigationItem.leftBarButtonItem performSelectorOnMainThread:@selector(setImage:)
-																withObject:_polling ? _pollingIcon : _streamingIcon
-															 waitUntilDone:NO];
+		// Reload thresholds on detail controller,
+		// they may have been changed in the background
+		[_detailController updateViewForMPNStatus];
 	}
 }
-
-- (void) clientConnectionDidEstablish:(LSClient *)client {
-	NSLog(@"StockListViewController: Connection established");
-}
-
-- (void) clientConnectionDidClose:(LSClient *)client {
-	NSLog(@"StockListViewController: Connection closed");
-	
-	[self.navigationItem.leftBarButtonItem performSelectorOnMainThread:@selector(setImage:)
-															withObject:_disconnectedIcon
-														 waitUntilDone:NO];
-	
-	// This event is called just by manually closing the connection,
-	// never happens in this example.
-}
-
-- (void) clientConnection:(LSClient *)client didEndWithCause:(int)cause {
-	NSLog(@"StockListViewController: Connection ended, cause: %d", cause);
-	
-	[self.navigationItem.leftBarButtonItem performSelectorOnMainThread:@selector(setImage:)
-															withObject:_disconnectedIcon
-														 waitUntilDone:NO];
-	
-	// In this case the session has been closed by the server, the LSClient
-	// will not automatically reconnect. Let's prepare for a new connection.
-	[_tableKey release];
-	_tableKey= nil;
-	
-	[self performSelector:@selector(connectToLightstreamer) withObject:nil afterDelay:1.0];
-}
-
-- (void) clientConnection:(LSClient *)client didReceiveDataError:(LSPushServerException *)error {
-	NSLog(@"StockListViewController: Data error: %@", error);
-}
-
-- (void) clientConnection:(LSClient *)client didReceiveServerFailure:(LSPushServerException *)failure {
-	NSLog(@"StockListViewController: Server failure: %@", failure);
-	
-	[self.navigationItem.leftBarButtonItem performSelectorOnMainThread:@selector(setImage:)
-															withObject:_disconnectedIcon
-														 waitUntilDone:NO];
-	
-	// The LSClient will reconnect automatically in this case.
-}
-
-- (void) clientConnection:(LSClient *)client didReceiveConnectionFailure:(LSPushConnectionException *)failure {
-	NSLog(@"StockListViewController: Connection failure: %@", failure);
-	
-	[self.navigationItem.leftBarButtonItem performSelectorOnMainThread:@selector(setImage:)
-															withObject:_disconnectedIcon
-														 waitUntilDone:NO];
-	
-	// The LSClient will reconnect automatically in this case.
-}
-
-- (void) clientConnection:(LSClient *)client isAboutToSendURLRequest:(NSMutableURLRequest *)urlRequest {}
 
 
 #pragma mark -
 #pragma mark Methods of LSTableDelegate
 
 - (void) table:(LSSubscribedTableKey *)tableKey itemPosition:(int)itemPosition itemName:(NSString *)itemName didUpdateWithInfo:(LSUpdateInfo *)updateInfo {
+	// This method is always called from a background thread
+	
+	// Check and prepare the item's data structures
 	NSMutableDictionary *item= nil;
 	NSMutableDictionary *itemUpdated= nil;
 	@synchronized (_itemData) {
 		item= [_itemData objectForKey:[NSNumber numberWithInt:(itemPosition -1)]];
 		if (!item) {
-			item= [[[NSMutableDictionary alloc] initWithCapacity:NUMBER_OF_FIELDS] autorelease];
+			item= [[NSMutableDictionary alloc] initWithCapacity:NUMBER_OF_LIST_FIELDS];
 			[_itemData setObject:item forKey:[NSNumber numberWithInt:(itemPosition -1)]];
 		}
 
 		itemUpdated= [_itemUpdated objectForKey:[NSNumber numberWithInt:(itemPosition -1)]];
 		if (!itemUpdated) {
-			itemUpdated= [[[NSMutableDictionary alloc] initWithCapacity:NUMBER_OF_FIELDS] autorelease];
+			itemUpdated= [[NSMutableDictionary alloc] initWithCapacity:NUMBER_OF_LIST_FIELDS];
 			[_itemUpdated setObject:itemUpdated forKey:[NSNumber numberWithInt:(itemPosition -1)]];
 		}
 	}
 		
-	for (NSString *fieldName in _fieldNames) {
+	// Store the updated fields in the item's data structures
+	for (NSString *fieldName in LIST_FIELDS) {
 		NSString *value= [updateInfo currentValueOfFieldName:fieldName];
 		
 		if (value)
@@ -538,18 +610,24 @@
 			[itemUpdated setObject:[NSNumber numberWithBool:YES] forKey:fieldName];
 	}
 	
+	// Evaluate the update color and store it in the item's data structures
 	double currentLastPrice= [[updateInfo currentValueOfFieldName:@"last_price"] doubleValue];
 	double previousLastPrice= [[updateInfo previousValueOfFieldName:@"last_price"] doubleValue];
 	if (currentLastPrice >= previousLastPrice)
 		[item setObject:@"green" forKey:@"color"];
 	else
 		[item setObject:@"orange" forKey:@"color"];
-
+	
+	// Mark rows to be reload
 	@synchronized (_rowsToBeReloaded) {
 		[_rowsToBeReloaded addObject:[NSIndexPath indexPathForRow:(itemPosition -1) inSection:0]];
 	}
 	
-	[self performSelectorOnMainThread:@selector(reloadTableRows) withObject:nil waitUntilDone:NO];
+	dispatch_async(dispatch_get_main_queue(), ^{
+		
+		// Update the table view
+		[self reloadTableRows];
+	});
 }
 
 

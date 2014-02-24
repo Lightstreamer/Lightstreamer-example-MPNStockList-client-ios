@@ -1,5 +1,5 @@
 //
-//  AppDelegate_iPhone.h
+//  StockListAppDelegate.h
 //  StockList Demo for iOS
 //
 // Copyright 2013 Weswit Srl
@@ -17,31 +17,19 @@
 // limitations under the License.
 //
 
-#import <UIKit/UIKit.h>
-#import "StockListAppDelegate.h"
+#import <Foundation/Foundation.h>
 
 
 @class StockListViewController;
 
-@interface AppDelegate_iPhone : NSObject <UIApplicationDelegate, StockListAppDelegate> {
-    UIWindow *_window;
-
-	UINavigationController *_navController;
-	StockListViewController *_stockListController;
-	
-	dispatch_queue_t _backgroundQueue;
-
-	BOOL _registrationForMPNSucceeded;
-}
+@protocol StockListAppDelegate <NSObject>
 
 
 #pragma mark -
 #pragma mark Properties
 
-@property (nonatomic, strong) IBOutlet UIWindow *window;
-@property (nonatomic, readonly) StockListViewController *stockListController;
 @property (nonatomic, readonly) BOOL registrationForMPNSucceeded;
+@property (nonatomic, readonly) StockListViewController *stockListController;
 
 
 @end
-

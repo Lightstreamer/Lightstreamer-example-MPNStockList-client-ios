@@ -18,22 +18,32 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "StockListAppDelegate.h"
 
 
 @class StockListViewController;
+@class DetailViewController;
 
-@interface AppDelegate_iPad : NSObject <UIApplicationDelegate> {
+@interface AppDelegate_iPad : NSObject <UIApplicationDelegate, StockListAppDelegate> {
     UIWindow *_window;
 	
-	UINavigationController *_navController;
+	UISplitViewController *_splitController;
 	StockListViewController *_stockListController;
+	DetailViewController *_detailController;
+	
+	dispatch_queue_t _backgroundQueue;
+
+	BOOL _registrationForMPNSucceeded;
 }
 
 
 #pragma mark -
 #pragma mark Properties
 
-@property (nonatomic, retain) IBOutlet UIWindow *window;
+@property (nonatomic, strong) IBOutlet UIWindow *window;
+@property (nonatomic, readonly) StockListViewController *stockListController;
+@property (nonatomic, readonly) DetailViewController *detailController;
+@property (nonatomic, readonly) BOOL registrationForMPNSucceeded;
 
 
 @end

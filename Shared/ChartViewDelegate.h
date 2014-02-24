@@ -1,5 +1,5 @@
 //
-//  StockListView.h
+//  ChartViewDelegate.h
 //  StockList Demo for iOS
 //
 // Copyright 2013 Weswit Srl
@@ -17,18 +17,15 @@
 // limitations under the License.
 //
 
-#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
 
 
-@interface StockListView : UIView {
-	IBOutlet __weak UITableView *_table;
-}
+@class ChartViewController;
 
+@protocol ChartViewDelegate <NSObject>
 
-#pragma mark -
-#pragma mark Properties
-
-@property (weak, nonatomic, readonly) UITableView *table;
-
+- (void) chart:(ChartViewController *)chartControllter didAddThresholdWithIndex:(int)index value:(float)value;
+- (void) chart:(ChartViewController *)chartControllter didChangeThresholdWithIndex:(int)index newValue:(float)value;
+- (void) chart:(ChartViewController *)chartControllter didRemoveThresholdWithIndex:(int)index;
 
 @end
