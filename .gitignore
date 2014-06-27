@@ -25,8 +25,9 @@ deployment
 build_res
 include_crea_link_esterno.bat
 lib_crea_link_esterno.bat
-Lightstreamer client for iOS/include_xGit
-Lightstreamer client for iOS/lib_xGit
+Internal StockList Demo for iOS.xcodeproj
+Lightstreamer client for iOS/compile_includes
+Lightstreamer client for iOS/compile_libs
 Lightstreamer client for iOS/include/LightstreamerClient.h
 Lightstreamer client for iOS/include/LSClient.h
 Lightstreamer client for iOS/include/LSConnectionConstraints.h
@@ -53,3 +54,5 @@ Lightstreamer client for iOS/include/LSMPNTokenChangeInfo.h
 Lightstreamer client for iOS/include/LSMPNTokenStatus.h
 Lightstreamer client for iOS/include/LSMPNInfo.h
 Lightstreamer client for iOS/include/LSMPNKey.h
+Lightstreamer client for iOS/include/LSMPNStatus.h
+Lightstreamer client for iOS/include/LSPushClientException.h
