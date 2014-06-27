@@ -29,6 +29,7 @@
 	
 	ChartViewController *_chartController;
 	
+	LSMPNKey *_priceMpnKey;
 	LSSubscribedTableKey *_tableKey;
 
 	dispatch_queue_t _backgroundQueue;

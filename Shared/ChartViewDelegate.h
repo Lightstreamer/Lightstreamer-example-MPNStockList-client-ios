@@ -21,11 +21,12 @@
 
 
 @class ChartViewController;
+@class ChartThreshold;
 
 @protocol ChartViewDelegate <NSObject>
 
-- (void) chart:(ChartViewController *)chartControllter didAddThresholdWithIndex:(int)index value:(float)value;
-- (void) chart:(ChartViewController *)chartControllter didChangeThresholdWithIndex:(int)index newValue:(float)value;
-- (void) chart:(ChartViewController *)chartControllter didRemoveThresholdWithIndex:(int)index;
+- (void) chart:(ChartViewController *)chartControllter didAddThreshold:(ChartThreshold *)threshold;
+- (void) chart:(ChartViewController *)chartControllter didChangeThreshold:(ChartThreshold *)threshold;
+- (void) chart:(ChartViewController *)chartControllter didRemoveThreshold:(ChartThreshold *)threshold;
 
 @end

@@ -20,6 +20,7 @@
 #import "AppDelegate_iPad.h"
 #import "StockListViewController.h"
 #import "DetailViewController.h"
+#import "MPNSubscriptionCache.h"
 #import "Constants.h"
 
 

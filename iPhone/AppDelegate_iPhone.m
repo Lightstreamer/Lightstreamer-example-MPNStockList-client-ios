@@ -19,6 +19,7 @@
 
 #import "AppDelegate_iPhone.h"
 #import "StockListViewController.h"
+#import "MPNSubscriptionCache.h"
 #import "Constants.h"
 
 

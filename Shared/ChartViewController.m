@@ -20,6 +20,9 @@
 #import "ChartViewController.h"
 #import "ChartViewDelegate.h"
 #import "ChartView.h"
+#import "ChartThreshold.h"
+
+#define SERVER_TIMEZONE                     (@"Europe/Dublin")
 
 #define TAP_SENSIBILITY_PIXELS              (20.0)
 
@@ -37,8 +40,19 @@
         // Initialization
 		_delegate= delegate;
 		
-		_currentThresholdIsNew= NO;
-		_currentThresholdIndex= NSNotFound;
+		// Prepare reference date (release date of SDK 1.3 a1)
+		NSCalendar *calendar= [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+		[calendar setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"GMT"]];
+
+		NSDateComponents *comps= [[NSDateComponents alloc] init];
+		[comps setDay:19];
+		[comps setMonth:2];
+		[comps setYear:2014];
+		_referenceDate= [calendar dateFromComponents:comps];
+		
+		// Prepare time parser
+		_timeFormatter= [[NSDateFormatter alloc] init];
+		[_timeFormatter setDateFormat:@"HH:mm:ss"];
     }
 	
     return self;
@@ -59,7 +73,7 @@
 #pragma mark Chart management
 
 - (void) clearChart {
-	[self clearChartWithMin:0.0 max:0.0 time:[NSDate timeIntervalSinceReferenceDate] value:0.0];
+	[self clearChartWithMin:0.0 max:0.0 time:[[NSDate date] timeIntervalSinceDate:_referenceDate] value:0.0];
 }
 
 - (void) clearChartWithMin:(float)min max:(float)max time:(NSTimeInterval)time value:(float)value {
@@ -75,16 +89,12 @@
 		[_chartView addValue:value withTime:time];
 }
 
-- (int) addThreshold:(float)value {
+- (ChartThreshold *) addThreshold:(float)value {
 	return [_chartView addThreshold:value];
 }
 
-- (void) setThreshold:(float)value atIndex:(int)index {
-	[_chartView setThreshold:value atIndex:index];
-}
-
-- (void) removeThresholdAtIndex:(int)index {
-	[_chartView removeThresholdAtIndex:index];
+- (void) removeThreshold:(ChartThreshold *)threshold {
+	[_chartView removeThreshold:threshold];
 }
 
 - (void) clearThresholds {
@@ -106,27 +116,20 @@
 
 	// Transalte Y coordinate in Y value
 	CGPoint valueTime= [_chartView valueAtPoint:point];
-	_currentThresholdValue= valueTime.y;
 	
 	// Compute approximate value-width of a common tap (40 pixel)
 	float tapWidth= ((_chartView.max - _chartView.min) / _chartView.frame.size.height) * TAP_SENSIBILITY_PIXELS;
 	
 	// Check if we are tapping an existing threshold
-	int index= 0;
-	NSArray *thresholds= [_chartView thresholds];
-	for (NSNumber *threshold in thresholds) {
-		if (ABS([threshold floatValue] - _currentThresholdValue) < tapWidth) {
-			_currentThresholdIndex= index;
-			break;
-		}
+	_currentThreshold= [_chartView findThresholdWithin:tapWidth fromValue:valueTime.y];
+	if (!_currentThreshold) {
 		
-		index++;
-	}
-	
-	if (_currentThresholdIndex == NSNotFound) {
+		// Create new threshold
 		_currentThresholdIsNew= YES;
-		_currentThresholdIndex= [_chartView addThreshold:_currentThresholdValue];
-	}
+		_currentThreshold= [_chartView addThreshold:valueTime.y];
+	
+	} else
+		_currentThresholdIsNew= NO;
 }
 
 - (void) touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -140,9 +143,9 @@
 	
 	// Transalte Y coordinate in Y value
 	CGPoint valueTime= [_chartView valueAtPoint:point];
-	_currentThresholdValue= valueTime.y;
 	
-	[_chartView setThreshold:_currentThresholdValue atIndex:_currentThresholdIndex];
+	// Update threshold (updates view)
+	_currentThreshold.value= valueTime.y;
 }
 
 - (void) touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -151,25 +154,21 @@
 		return;
 	}
 	
-	if ((_currentThresholdValue > _chartView.max) || (_currentThresholdValue < _chartView.min)) {
-		[_chartView removeThresholdAtIndex:_currentThresholdIndex];
+	if ((_currentThreshold.value > _chartView.max) || (_currentThreshold.value < _chartView.min)) {
+		[_currentThreshold remove];
 		
 		// Notify the delegate
-        if (!_currentThresholdIsNew)
-            [_delegate chart:self didRemoveThresholdWithIndex:_currentThresholdIndex];
+		if (!_currentThresholdIsNew)
+			[_delegate chart:self didRemoveThreshold:_currentThreshold];
 	
 	} else {
 		
 		// Notify the delegate
 		if (_currentThresholdIsNew)
-			[_delegate chart:self didAddThresholdWithIndex:_currentThresholdIndex value:_currentThresholdValue];
+			[_delegate chart:self didAddThreshold:_currentThreshold];
 		else
-			[_delegate chart:self didChangeThresholdWithIndex:_currentThresholdIndex newValue:_currentThresholdValue];
+			[_delegate chart:self didChangeThreshold:_currentThreshold];
 	}
-	
-	// Cleanup
-	_currentThresholdIsNew= NO;
-	_currentThresholdIndex= NSNotFound;
 }
 
 
@@ -178,11 +177,32 @@
 
 - (void) itemDidUpdateWithInfo:(LSUpdateInfo *)updateInfo {
 	
-	// Extract last point data
-	NSDateFormatter *formatter= [[NSDateFormatter alloc] init];
-	[formatter setDateFormat:@"HH:mm:ss"];
+	// Extract last point time
+	NSString *timeString= [updateInfo currentValueOfFieldName:@"time"];
+	NSDate *updateTime= [_timeFormatter dateFromString:timeString];
 	
-	NSTimeInterval time= [[formatter dateFromString:[updateInfo currentValueOfFieldName:@"time"]] timeIntervalSinceReferenceDate];
+	// Compute the full date knowing the Server lives in the West European time zone
+	// (which is not simply GMT, as it may undergo daylight savings)
+	NSCalendar *calendar= [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+	NSTimeZone *timeZone= [NSTimeZone timeZoneWithName:SERVER_TIMEZONE];
+	[calendar setTimeZone:timeZone];
+	
+	NSDateComponents *nowComponents= [calendar components:(NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit) fromDate:[NSDate date]];
+	NSDateComponents *timeComponents=[calendar components:(NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit) fromDate:updateTime];
+	
+	NSDateComponents *dateComponents= [[NSDateComponents alloc] init];
+	[dateComponents setTimeZone:timeZone]; // The timezone is known a-priori
+	[dateComponents setYear:nowComponents.year]; // Take the current day
+	[dateComponents setMonth:nowComponents.month];
+	[dateComponents setDay:nowComponents.day];
+	[dateComponents setHour:timeComponents.hour]; // Take the time of the update
+	[dateComponents setMinute:timeComponents.minute];
+	[dateComponents setSecond:timeComponents.second];
+	
+	NSDate *updateDate= [calendar dateFromComponents:dateComponents];
+	NSTimeInterval time= [updateDate timeIntervalSinceDate:_referenceDate];
+	
+	// Extract last point data
 	float value= [[updateInfo currentValueOfFieldName:@"last_price"] floatValue];
 	float min= [[updateInfo currentValueOfFieldName:@"min"] floatValue];
 	float max= [[updateInfo currentValueOfFieldName:@"max"] floatValue];

@@ -20,6 +20,8 @@
 #import <UIKit/UIKit.h>
 
 
+@class ChartThreshold;
+
 @interface ChartView : UIView {
 	NSMutableArray *_data;
 	
@@ -42,9 +44,9 @@
 #pragma mark -
 #pragma mark Threshold management
 
-- (int) addThreshold:(float)value;
-- (void) setThreshold:(float)value atIndex:(int)index;
-- (void) removeThresholdAtIndex:(int)index;
+- (ChartThreshold *) addThreshold:(float)value;
+- (ChartThreshold *) findThresholdWithin:(float)margin fromValue:(float)value;
+- (void) removeThreshold:(ChartThreshold *)threshold;
 - (void) clearThresholds;
 
 
@@ -62,8 +64,6 @@
 @property (nonatomic, assign) float max;
 @property (nonatomic, assign) NSTimeInterval begin;
 @property (nonatomic, assign) NSTimeInterval end;
-
-@property (weak, nonatomic, readonly) NSArray *thresholds;
 
 
 @end

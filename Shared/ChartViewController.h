@@ -21,15 +21,18 @@
 
 
 @class ChartView;
+@class ChartThreshold;
 @protocol ChartViewDelegate;
 
 @interface ChartViewController : UIViewController {
 	ChartView *_chartView;
 	id <ChartViewDelegate> _delegate;
 	
-	float _currentThresholdValue;
+	ChartThreshold *_currentThreshold;
 	BOOL _currentThresholdIsNew;
-	int _currentThresholdIndex;
+	
+	NSDateFormatter *_timeFormatter;
+	NSDate *_referenceDate;
 }
 
 
@@ -45,9 +48,8 @@
 - (void) clearChart;
 - (void) clearChartWithMin:(float)min max:(float)max time:(NSTimeInterval)time value:(float)value;
 
-- (int) addThreshold:(float)value;
-- (void) setThreshold:(float)value atIndex:(int)index;
-- (void) removeThresholdAtIndex:(int)index;
+- (ChartThreshold *) addThreshold:(float)value;
+- (void) removeThreshold:(ChartThreshold *)threshold;
 - (void) clearThresholds;
 
 

@@ -18,7 +18,7 @@
  */
 
 #define PUSH_SERVER_URL            (@"http://push.lightstreamer.com")
-//#define PUSH_SERVER_URL          (@"http://10.0.1.19:8080/")
+//#define PUSH_SERVER_URL          (@"http://10.0.1.24:8080/")
 #define ADAPTER_SET                (@"DEMO")
 #define DATA_ADAPTER               (@"QUOTE_ADAPTER")
 
@@ -36,6 +36,7 @@
 #define NOTIFICATION_APP_MPN       (@"LSAppDidRegisterForMPN")
 #define NOTIFICATION_CONN_STATUS   (@"LSConnectionStatusChanged")
 #define NOTIFICATION_CONN_ENDED    (@"LSConnectionEnded")
+#define NOTIFICATION_CACHE_UPDATED (@"LSMPNSubscriptionCacheUpdated")
 
 #define ALERT_DELAY                (0.250)
 #define FLASH_DURATION             (0.150)

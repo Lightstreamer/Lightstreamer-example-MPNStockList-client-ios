@@ -18,6 +18,8 @@
 //
 
 #import "ChartView.h"
+#import "ChartThreshold.h"
+
 #import <CoreText/CoreText.h>
 
 #define LEFT_AXIS_MARGIN            (40.0)
@@ -63,6 +65,7 @@
     return self;
 }
 
+
 #pragma mark -
 #pragma mark Data management
 
@@ -72,24 +75,24 @@
 		// Add value, keeping the array sorted
 		NSValue *point= [NSValue valueWithCGPoint:CGPointMake(time, value)];
 
-		int index= [_data indexOfObject:point
-						  inSortedRange:NSMakeRange(0, [_data count])
-								options:NSBinarySearchingLastEqual | NSBinarySearchingInsertionIndex
-						usingComparator:^NSComparisonResult(id obj1, id obj2) {
-							CGPoint point1= [(NSValue *) obj1 CGPointValue];
-							CGPoint point2= [(NSValue *) obj2 CGPointValue];
+		NSUInteger index= [_data indexOfObject:point
+								 inSortedRange:NSMakeRange(0, [_data count])
+									   options:NSBinarySearchingLastEqual | NSBinarySearchingInsertionIndex
+							   usingComparator:^NSComparisonResult(id obj1, id obj2) {
+								   CGPoint point1= [(NSValue *) obj1 CGPointValue];
+								   CGPoint point2= [(NSValue *) obj2 CGPointValue];
 							
-							if (point1.x < point2.x)
-								return NSOrderedAscending;
-							else if (point1.x > point2.x)
-								return NSOrderedDescending;
-							else
-								return NSOrderedSame;
-						}];
+								   if (point1.x < point2.x)
+									   return NSOrderedAscending;
+								   else if (point1.x > point2.x)
+									   return NSOrderedDescending;
+								   else
+									   return NSOrderedSame;
+							   }];
 		
 		[_data insertObject:[NSValue valueWithCGPoint:CGPointMake(time, value)] atIndex:index];
 		
-		// Strip out values out for time range
+		// Strip out values out of time range
 		NSValue *begin= [NSValue valueWithCGPoint:CGPointMake(_begin, 0.0)];
 		
 		index= [_data indexOfObject:begin
@@ -107,8 +110,28 @@
 							return NSOrderedSame;
 					}];
 		
-		if (index > 1)
-			[_data removeObjectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, index -1)]];
+		if (index >= 1)
+			[_data removeObjectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, index)]];
+		
+		NSValue *end= [NSValue valueWithCGPoint:CGPointMake(_end, 0.0)];
+		
+		index= [_data indexOfObject:end
+					  inSortedRange:NSMakeRange(0, [_data count])
+							options:NSBinarySearchingLastEqual | NSBinarySearchingInsertionIndex
+					usingComparator:^NSComparisonResult(id obj1, id obj2) {
+						CGPoint point1= [(NSValue *) obj1 CGPointValue];
+						CGPoint point2= [(NSValue *) obj2 CGPointValue];
+						
+						if (point1.x < point2.x)
+							return NSOrderedAscending;
+						else if (point1.x > point2.x)
+							return NSOrderedDescending;
+						else
+							return NSOrderedSame;
+					}];
+		
+		if (index < [_data count])
+			[_data removeObjectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(index, [_data count] -index)]];
 	}
 	
 	[self setNeedsDisplay];
@@ -126,32 +149,34 @@
 #pragma mark -
 #pragma mark Threshold management
 
-- (int) addThreshold:(float)value {
-	int index= NSNotFound;
+- (ChartThreshold *) addThreshold:(float)value {
+	ChartThreshold *threshold= [[ChartThreshold alloc] initWithView:self value:value];
 	
 	@synchronized (self) {
-		[_thresholds addObject:[NSNumber numberWithFloat:value]];
-		index= [_thresholds count] -1;
+		[_thresholds addObject:threshold];
 	}
 	
 	[self setNeedsDisplay];
 	
-	return index;
+	return threshold;
 }
 
-- (void) setThreshold:(float)value atIndex:(int)index {
+- (ChartThreshold *) findThresholdWithin:(float)margin fromValue:(float)value {
 	@synchronized (self) {
-		[_thresholds setObject:[NSNumber numberWithFloat:value] atIndexedSubscript:index];
+		for (ChartThreshold *threshold in _thresholds) {
+			if (ABS(threshold.value - value) < margin)
+				return threshold;
+		}
 	}
 	
-	[self setNeedsDisplay];
+	return nil;
 }
 
-- (void) removeThresholdAtIndex:(int)index {
+- (void) removeThreshold:(ChartThreshold *)threshold {
 	@synchronized (self) {
-		[_thresholds removeObjectAtIndex:index];
+		[_thresholds removeObject:threshold];
 	}
-	
+
 	[self setNeedsDisplay];
 }
 
@@ -162,6 +187,7 @@
 	
 	[self setNeedsDisplay];
 }
+
 
 #pragma mark -
 #pragma mark Coordinates managements
@@ -271,18 +297,6 @@
 	[self setNeedsDisplay];
 }
 
-@dynamic thresholds;
-
-- (NSArray *) thresholds {
-	NSArray *thresholds= nil;
-	
-	@synchronized (self) {
-		thresholds= [_thresholds copy];
-	}
-	
-	return thresholds;
-}
-
 
 #pragma mark -
 #pragma mark Drawing
@@ -330,7 +344,7 @@
 		
 		float dashPhase= 0.0;
 		float dashLengths[] = { 10.0, 5.0 };
-		CGContextSetLineDash(context, dashPhase, dashLengths, 2);
+		CGContextSetLineDash(context, dashPhase, (const CGFloat *) dashLengths, 2);
 		
 		int current= ((int) (_min + 1.0));
 		while (current < _max) {
@@ -461,8 +475,8 @@
 						 THRESHOLD_LABEL_COLOR.CGColor, (id) kCTForegroundColorAttributeName,
 						 nil];
 		
-		for (NSNumber *threshold in _thresholds) {
-			float value= [threshold floatValue];
+		for (ChartThreshold *threshold in _thresholds) {
+			float value= threshold.value;
 			
 			CGPoint point= [self pointForValue:CGPointMake(0.0, value)];
 			float y= point.y;

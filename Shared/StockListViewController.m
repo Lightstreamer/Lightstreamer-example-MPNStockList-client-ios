@@ -24,7 +24,7 @@
 #import "InfoViewController.h"
 #import "StatusViewController.h"
 #import "Connector.h"
-#import "Storage.h"
+#import "MPNSubscriptionCache.h"
 #import "SpecialEffects.h"
 #import "Constants.h"
 #import "AppDelegate_iPad.h"
@@ -241,8 +241,8 @@
 	NSMutableDictionary *item= nil;
 	NSMutableDictionary *itemUpdated= nil;
 	@synchronized (_itemData) {
-		item= [_itemData objectForKey:[NSNumber numberWithInt:indexPath.row]];
-		itemUpdated= [_itemUpdated objectForKey:[NSNumber numberWithInt:indexPath.row]];
+		item= [_itemData objectForKey:[NSNumber numberWithInteger:indexPath.row]];
+		itemUpdated= [_itemUpdated objectForKey:[NSNumber numberWithInteger:indexPath.row]];
 	}
 	
 	if (item) {
@@ -407,6 +407,7 @@
 	}
 }
 
+
 #pragma mark -
 #pragma mark Lighstreamer connection status management
 
@@ -414,7 +415,8 @@
 	// This method is always called from a background thread
 
 	// Check if we need to subscribe
-	BOOL needSubscription= ((!_subscribed) && [[[Connector sharedConnector] client] isConnected]);
+	BOOL needsSubscription= ((!_subscribed) && [[[Connector sharedConnector] client] isConnected]);
+	BOOL needsMPNCacheUpdate= [[[Connector sharedConnector] client] isConnected];
 
 	dispatch_async(dispatch_get_main_queue(), ^{
 		
@@ -443,12 +445,12 @@
 		
 		// If the detail controller is visible, set the item on the detail view controller,
 		// so that it can do its own subscription
-		if (needSubscription && (DEVICE_IPAD || ([self.navigationController.viewControllers count] > 1)))
+		if (needsSubscription && (DEVICE_IPAD || ([self.navigationController.viewControllers count] > 1)))
 			[_detailController changeItem:[TABLE_ITEMS objectAtIndex:_selectedRow.row]];
 	});
 	
 	// Check if we need to subscribe
-	if (needSubscription) {
+	if (needsSubscription) {
 		_subscribed= YES;
 
 		// Subscribe the table on a background thread
@@ -475,6 +477,56 @@
 			}
 		});
 	}
+	
+	// Check if we need to update MPN subscription cache
+	if (needsMPNCacheUpdate) {
+		dispatch_async(dispatch_get_main_queue(), ^() {
+			[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+		});
+		
+		// Clear and download of MPN subscriptions in background
+		dispatch_async(_backgroundQueue, ^() {
+			NSLog(@"StockListViewController: deleting triggered MPN subscriptions...");
+			
+			@try {
+				[[[Connector sharedConnector] client] deactivateMPNsWithStatus:LSMPNStatusTriggered];
+				
+				NSLog(@"StockListViewController: triggered MPN subscriptions deleted");
+				
+			} @catch (NSException *e) {
+				NSLog(@"StockListViewController: deletion of triggered MPN subscriptinos failed with exception: %@", e);
+			}
+			
+			NSLog(@"StockListViewController: downloading active MPN subscriptions...");
+			
+			@try {
+				NSArray *mpnInfos= [[[Connector sharedConnector] client] inquireMPNsWithStatus:LSMPNStatusActive];
+				
+				NSLog(@"StockListViewController: active MPN subscriptions downloaded");
+				
+				[[MPNSubscriptionCache sharedCache] updateWithInfos:mpnInfos];
+				
+				NSLog(@"StockListViewController: MPN subscription cache updated");
+				
+			} @catch (LSPushServerException *pse) {
+				if (pse.errorCode == 45) {
+					
+					// MPN subscription has been forcibly deleted on the Server
+					[[MPNSubscriptionCache sharedCache] clearMPNSubscriptions];
+				
+				} else {
+					NSLog(@"StockListViewController: download of active MPN subscriptinos failed with exception: %@", pse);
+				}
+
+			} @catch (NSException *e) {
+				NSLog(@"StockListViewController: download of active MPN subscriptinos failed with exception: %@", e);
+			}
+			
+			dispatch_async(dispatch_get_main_queue(), ^() {
+				[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+			});
+		});
+	}
 }
 
 - (void) connectionEnded {
@@ -498,27 +550,32 @@
 - (void) handleMPN:(NSDictionary *)mpn {
 	// This method is always called from the main thread
 	
-	// Extract MPN content (the subscription ID is filled
-	// only for notifications coming from a threshold)
+	// Extract MPN content
 	NSString *item= [mpn objectForKey:@"item"];
 	NSString *subscriptionId= [mpn objectForKey:@"subscriptionId"];
 	NSDictionary *aps= [mpn objectForKey:@"aps"];
 	NSDictionary *alert= [aps objectForKey:@"alert"];
 	NSString *body= [alert objectForKey:@"body"];
 
-	// Check the item is valid
-	int index= [TABLE_ITEMS indexOfObject:item];
+	// Skip extraneous MPN notifications
+	NSUInteger index= [TABLE_ITEMS indexOfObject:item];
 	if (index == NSNotFound)
 		return;
 		
 	// Check if we are watching this item or another one
 	BOOL itemIsSelected= (_selectedRow && (_selectedRow.row == index));
-
-	// Reload thresholds if necessary: if we are already watching this
-	// item, this avoids a call to a changeItem on the detail controller,
-	// which would clear the chart
-	if (itemIsSelected && subscriptionId)
-		[_detailController updateViewForMPNStatus];
+	
+	if (subscriptionId) {
+		
+		// It's a triggered threshold, update the app's cache
+		LSMPNKey *mpnKey= [LSMPNKey mpnKeyWithSubscriptionId:subscriptionId];
+		[[MPNSubscriptionCache sharedCache] removeMPNSubscriptionWithKey:mpnKey forItem:item];
+		
+		// Reload thresholds: if we are already watching this item this avoids a
+		// call to a changeItem on the detail controller, which would clear the chart
+		if (itemIsSelected && subscriptionId)
+			[_detailController updateViewForMPNStatus];
+	}
 	
 	// Add View and Skip buttons if the item is not currently selected
 	[[[UIAlertView alloc] initWithTitle:@"MPN Notification"

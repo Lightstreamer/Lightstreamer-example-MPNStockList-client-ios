@@ -20,10 +20,11 @@
 #import "DetailViewController.h"
 #import "DetailView.h"
 #import "ChartViewController.h"
+#import "ChartThreshold.h"
 #import "StockListAppDelegate.h"
 #import "StockListViewController.h"
 #import "Connector.h"
-#import "Storage.h"
+#import "MPNSubscriptionCache.h"
 #import "SpecialEffects.h"
 #import "Constants.h"
 #import "UIAlertView+BlockExtensions.h"
@@ -49,9 +50,8 @@
 
 - (void) updateView;
 
-- (void) createNewMPNSubscriptionWhenGreaterThan:(BOOL)greaterThan value:(float)value withIndex:(int)index;
-- (void) updateMPNSubscriptionWithIndex:(int)index whenGreaterThan:(BOOL)greaterThan value:(float)value;
-- (void) deleteMPNSubscriptionWithIndex:(int)index;
+- (void) addOrUpdateMPNSubscriptionForThreshold:(ChartThreshold *)threshold greaterThan:(BOOL)greaterThan;
+- (void) deleteMPNSubscriptionForThreshold:(ChartThreshold *)threshold;
 
 
 @end
@@ -108,8 +108,10 @@
 	[_chartController.view setFrame:CGRectMake(0.0, 0.0, _detailView.chartBackgroundView.frame.size.width, _detailView.chartBackgroundView.frame.size.height)];
 		
 	// We use the notification center to know when the app
-	// has been successfully registered for MPN
+	// has been successfully registered for MPN and when
+	// the MPN subscription cache has been updated
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appDidRegisterForMPN) name:NOTIFICATION_APP_MPN object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appDidUpdateMPNSubscriptionCache) name:NOTIFICATION_CACHE_UPDATED object:nil];
 	
 	// Check if registration for MPN has already been completed
 	id <StockListAppDelegate> appDelegate= (id <StockListAppDelegate>) [[UIApplication sharedApplication] delegate];
@@ -213,144 +215,43 @@
 - (void) updateViewForMPNStatus {
 	// This method is always called from the main thread
 	
-	// Get and keep current item
-	NSString *item= nil;
-	@synchronized (self) {
-		item= _item;
-	}
-
-	// Set the view according to known status
-	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-	
-	// Disable interaction until the real status has beeen checked
-	[self disableMPNControls];
-	
 	// Clear thresholds on the chart
+	_detailView.mpnSwitch.on= NO;
 	[_chartController clearThresholds];
-	
-	// Add thresholds according to their known status
-	NSArray *thresholdValues= [[Storage sharedStorage] thresholdValuesForItem:item];
-	for (NSNumber *value in thresholdValues)
-		[_chartController addThreshold:[value floatValue]];
-	
-	// Set MPN switch according to its known status
-	_detailView.mpnSwitch.on= [[Storage sharedStorage] isMPNActiveForItem:item];
-	
-	// Check real status of MPN subscriptions in background
-	dispatch_async(_backgroundQueue, ^{
-		if ([[Storage sharedStorage] isMPNActiveForItem:item]) {
-			
-			// Check if the main MPN subscription is actually active
-			LSMPNKey *mpnKey= [[Storage sharedStorage] MPNKeyForItem:item];
-			
-			@try {
-				LSMPNStatus status= [[[Connector sharedConnector] client] inquireMPNStatus:mpnKey];
-				switch (status) {
-					case LSMPNStatusActive:
-						
-						// MPN subscription is active
-						break;
-						
-					case LSMPNStatusSuspended:
-						
-						// MPN subscription has been suspended, a token change is pending
-						break;
-						
-					default:
-						break;
-				}
 
-			} @catch (LSPushServerException *pse) {
-				if ((pse.errorCode == 46) || (pse.errorCode == 45)) {
-					
-					// MPN subscription has been deleted
-					[[Storage sharedStorage] clearMPNKeyForItem:item];
-				
-				} else
-					NSLog(@"DetailViewController: exception caught while inquiring status of MPN subscription: %@", pse);
-				
-			} @catch (NSException *e) {
-				NSLog(@"DetailViewController: exception caught while inquiring status of MPN subscription: %@", e);
-			}
-		}
+	// Early bail
+	if (!_item)
+		return;
+	
+	// Update view according to cached MPN subscriptions
+	NSArray *mpnInfos= [[MPNSubscriptionCache sharedCache] getMPNSubscriptionsForItem:_item];
+	for (LSMPNInfo *mpnInfo in mpnInfos) {
+		NSString *subscriptionId= [mpnInfo.customData objectForKey:@"subscriptionId"];
+		NSString *threshold= [mpnInfo.customData objectForKey:@"threshold"];
 		
-		// Check existing thresholds, they may have triggered in the background
-		NSArray *mpnKeys= [[Storage sharedStorage] thresholdMPNKeysForItem:item];
-		for (LSMPNKey *mpnKey in mpnKeys) {
-			@try {
-				LSMPNStatus status= [[[Connector sharedConnector] client] inquireMPNStatus:mpnKey];
-				switch (status) {
-					case LSMPNStatusActive:
-						
-						// MPN subscription is active and non-triggered
-						break;
-						
-					case LSMPNStatusTriggered: {
-						
-						// MPN subscription did trigger, delete its threshold
-						int index= [[Storage sharedStorage] indexOfThresholdWithMPNKey:mpnKey forItem:item];
-						[[Storage sharedStorage] deleteThresholdAtIndex:index forItem:item];
-						
-						// Delete also the MPN subscription
-						@try {
-							[[[Connector sharedConnector] client] deactivateMPN:mpnKey];
-							
-						} @catch (NSException *e) {
-							NSLog(@"DetailViewController: exception caught while deactivating MPN subscription: %@", e);
-						}
-						break;
-					}
-						
-					case LSMPNStatusSuspended:
-						
-						// MPN subscription has been suspended, a token change is pending
-						break;
-						
-					default:
-						break;
-				}
-				
-			} @catch (LSPushServerException *pse) {
-				if ((pse.errorCode == 46) || (pse.errorCode == 45)) {
-					
-					// MPN subscription has been forcibly deleted on the Server
-					int index= [[Storage sharedStorage] indexOfThresholdWithMPNKey:mpnKey forItem:item];
-					[[Storage sharedStorage] deleteThresholdAtIndex:index forItem:item];
-					
-				} else
-					NSLog(@"DetailViewController: exception caught while inquiring status of MPN subscription: %@", pse);
-
-			} @catch (NSException *e) {
-				NSLog(@"DetailViewController: exception caught while inquiring status of MPN subscription trigger: %@", e);
-			}
+		if (subscriptionId && threshold) {
 			
+			// MPN subscription is a threshold
+			ChartThreshold *chartThreshold= [_chartController addThreshold:[threshold floatValue]];
+			chartThreshold.thresholdId= mpnInfo.mpnKey.subscriptionId;
+			
+		} else if (subscriptionId || threshold) {
+			
+			// MPN subscription is a threshold from the old version of the app,
+			// extract the threshold from the trigger expression
+			NSArray *components= [mpnInfo.triggerExpression componentsSeparatedByString:@" "];
+			NSString *thresholdValue= [components lastObject];
+			
+			ChartThreshold *chartThreshold= [_chartController addThreshold:[thresholdValue floatValue]];
+			chartThreshold.thresholdId= mpnInfo.mpnKey.subscriptionId;
+			
+		} else {
+			
+			// MPN subscription is main price subscription
+			_priceMpnKey= mpnInfo.mpnKey;
+			_detailView.mpnSwitch.on= YES;
 		}
-		
-		// Check if we are still on the same item
-		@synchronized (self) {
-			if (![item isEqualToString:_item])
-				return;
-		}
-		
-		// Update the view again according to real status
-		dispatch_async(dispatch_get_main_queue(), ^(){
-			[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-			
-			// Enable interaction
-			[self enableMPNControls];
-
-			// Clear thresholds on the chart
-			[_chartController clearThresholds];
-			
-			// Add thresholds according to their real status
-			NSArray *thresholdValues= [[Storage sharedStorage] thresholdValuesForItem:item];
-			for (NSNumber *value in thresholdValues)
-				[_chartController addThreshold:[value floatValue]];
-			
-			// Set MPN switch according to its real status
-			_detailView.mpnSwitch.on= [[Storage sharedStorage] isMPNActiveForItem:item];
-		});
-	});
+	}
 }
 
 
@@ -377,20 +278,23 @@
 																				   snapshot:NO];
 			
 			// Prepare the MPN info
-			LSMPNInfo *mpnInfo= [LSMPNInfo mpnInfoWithSound:@"Default"
-													  badge:@"AUTO"
-													 format:@"Stock ${stock_name} is now ${last_price}"];
+			LSMPNInfo *mpnInfo= [LSMPNInfo mpnInfoWithTableInfo:tableInfo
+														  sound:@"Default"
+														  badge:@"AUTO"
+														 format:@"Stock ${stock_name} is now ${last_price}"];
 			
-			// Add the item name to match the MPN against the item list
-			mpnInfo.customData= [NSDictionary dictionaryWithObjectsAndKeys:item, @"item", nil];
+			// Add the custom data to match the subscription against the MPN list
+			mpnInfo.customData= [NSDictionary dictionaryWithObjectsAndKeys:
+								 item, @"item",
+								 nil];
 			
 			@try {
 				
 				// Activate the new MPN subscription
-				LSMPNKey *mpnKey= [[[Connector sharedConnector] client] activateMPNForTable:tableInfo withInfo:mpnInfo];
+				[[[Connector sharedConnector] client] activateMPN:mpnInfo];
 
-				// Save it on the app's storage
-				[[Storage sharedStorage] setMPNKey:mpnKey forItem:item];
+				// Update the app's cache
+				[[MPNSubscriptionCache sharedCache] addMPNSubscription:mpnInfo];
 				
 			} @catch (NSException *e) {
 				NSLog(@"DetailViewController: exception caught while activating MPN subscription: %@", e);
@@ -415,22 +319,20 @@
 		
 		} else {
 			
-			// Retrieve the MPN key
-			LSMPNKey *mpnKey= [[Storage sharedStorage] MPNKeyForItem:item];
-
 			@try {
 				
 				// Delete the MPN subscription
-				[[[Connector sharedConnector] client] deactivateMPN:mpnKey];
+				[[[Connector sharedConnector] client] deactivateMPN:_priceMpnKey];
 				
-				// Remove it from the app's storage
-				[[Storage sharedStorage] clearMPNKeyForItem:item];
+				// Update the app's cache
+				[[MPNSubscriptionCache sharedCache] removeMPNSubscriptionWithKey:_priceMpnKey forItem:item];
 				
 			} @catch (LSPushServerException *pse) {
 				if ((pse.errorCode == 46) || (pse.errorCode == 45)) {
 					
-					// MPN subscription has been forcibly deleted on the Server
-					[[Storage sharedStorage] clearMPNKeyForItem:item];
+					// MPN subscription has been forcibly deleted on the Server,
+					// update the app's cache
+					[[MPNSubscriptionCache sharedCache] removeMPNSubscriptionWithKey:_priceMpnKey forItem:item];
 					
 				} else {
 					NSLog(@"DetailViewController: exception caught while deactivating MPN subscription: %@", pse);
@@ -520,24 +422,24 @@
 #pragma mark -
 #pragma mark ChartViewDelegate methods
 
-- (void) chart:(ChartViewController *)chartControllter didAddThresholdWithIndex:(int)index value:(float)value {
+- (void) chart:(ChartViewController *)chartControllter didAddThreshold:(ChartThreshold *)threshold {
 	float lastPrice= 0.0;
 	@synchronized (self) {
 		lastPrice= [[_itemData objectForKey:@"last_price"] floatValue];
 	}
 	
-	if (value > lastPrice) {
+	if (threshold.value > lastPrice) {
 
 		// The threshold is higher than current price,
 		// ask confirm with the appropriate alert view
 		[[[UIAlertView alloc] initWithTitle:@"Add alert on threshold"
-									message:[NSString stringWithFormat:@"Confirm adding a notification alert when %@ rises over %.2f", self.title, value]
+									message:[NSString stringWithFormat:@"Confirm adding a notification alert when %@ rises above %.2f", self.title, threshold.value]
 							completionBlock:^(NSUInteger buttonIndex, UIAlertView *alertView) {
 								switch (buttonIndex) {
 									case 0:
 										 
 										// Cleanup
-										[_chartController removeThresholdAtIndex:index];
+										[_chartController removeThreshold:threshold];
 										break;
 
 									case 1:
@@ -545,7 +447,7 @@
 										 
 										// Proceed
 										dispatch_async(_backgroundQueue, ^() {
-											[self createNewMPNSubscriptionWhenGreaterThan:YES value:value withIndex:index];
+											[self addOrUpdateMPNSubscriptionForThreshold:threshold greaterThan:YES];
 										});
 										break;
 								}
@@ -553,18 +455,18 @@
 						  cancelButtonTitle:@"Cancel"
 						  otherButtonTitles:@"Proceed", nil] show];
 
-	} else if (value < lastPrice) {
+	} else if (threshold.value < lastPrice) {
 		
 		// The threshold is lower than current price,
 		// ask confirm with the appropriate alert view
 		[[[UIAlertView alloc] initWithTitle:@"Add alert on threshold"
-									message:[NSString stringWithFormat:@"Confirm adding a notification alert when %@ lowers below %.2f", self.title, value]
+									message:[NSString stringWithFormat:@"Confirm adding a notification alert when %@ drops below %.2f", self.title, threshold.value]
 							completionBlock:^(NSUInteger buttonIndex, UIAlertView *alertView) {
 								switch (buttonIndex) {
 									case 0:
 										 
 										// Cleanup
-										[_chartController removeThresholdAtIndex:index];
+										[_chartController removeThreshold:threshold];
 										break;
 										 
 									case 1:
@@ -572,7 +474,7 @@
 										 
 										// Proceed
 										dispatch_async(_backgroundQueue, ^() {
-											[self createNewMPNSubscriptionWhenGreaterThan:NO value:value withIndex:index];
+											[self addOrUpdateMPNSubscriptionForThreshold:threshold greaterThan:NO];
 										});
 										break;
 								}
@@ -591,11 +493,11 @@
 						  otherButtonTitles:nil] show];
 		
 		// Cleanup
-		[_chartController removeThresholdAtIndex:index];
+		[_chartController removeThreshold:threshold];
 	}
 }
 
-- (void) chart:(ChartViewController *)chartControllter didChangeThresholdWithIndex:(int)index newValue:(float)value {
+- (void) chart:(ChartViewController *)chartControllter didChangeThreshold:(ChartThreshold *)threshold {
 	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
 	
 	float lastPrice= 0.0;
@@ -605,16 +507,16 @@
 
 	// No need to ask confirm, just proceed
 	dispatch_async(_backgroundQueue, ^(){
-		[self updateMPNSubscriptionWithIndex:index whenGreaterThan:(value > lastPrice) value:value];
+		[self addOrUpdateMPNSubscriptionForThreshold:threshold greaterThan:(threshold.value > lastPrice)];
 	});
 }
 
-- (void) chart:(ChartViewController *)chartControllter didRemoveThresholdWithIndex:(int)index {
+- (void) chart:(ChartViewController *)chartControllter didRemoveThreshold:(ChartThreshold *)threshold {
 	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
 	
 	// No need to ask confirm, just proceed
 	dispatch_async(_backgroundQueue, ^(){
-		[self deleteMPNSubscriptionWithIndex:index];
+		[self deleteMPNSubscriptionForThreshold:threshold];
 	});
 }
 
@@ -632,6 +534,12 @@
 	// This method is always called from the main thread
 	
 	[self enableMPNControls];
+}
+
+- (void) appDidUpdateMPNSubscriptionCache {
+	dispatch_async(dispatch_get_main_queue(), ^() {
+		[self updateViewForMPNStatus];
+	});
 }
 
 
@@ -747,13 +655,80 @@
 	}
 }
 
-- (void) createNewMPNSubscriptionWhenGreaterThan:(BOOL)greaterThan value:(float)value withIndex:(int)index {
+- (void) addOrUpdateMPNSubscriptionForThreshold:(ChartThreshold *)threshold greaterThan:(BOOL)greaterThan {
 	// This method is always called from a background thread
 
 	// Get and keep current item
 	NSString *item= nil;
 	@synchronized (self) {
 		item= _item;
+	}
+	
+	if (threshold.thresholdId) {
+		
+		// Get the old MPN key
+		LSMPNKey *oldMpnKey= [LSMPNKey mpnKeyWithSubscriptionId:threshold.thresholdId];
+		
+		@try {
+			
+			// First delete the old MPN subscription
+			[[[Connector sharedConnector] client] deactivateMPN:oldMpnKey];
+			
+			// Update the app's cache
+			[[MPNSubscriptionCache sharedCache] removeMPNSubscriptionWithKey:oldMpnKey forItem:item];
+			
+		} @catch (LSPushServerException *pse) {
+			if ((pse.errorCode == 46) || (pse.errorCode == 45)) {
+				
+				// MPN subscription has been forcibly deleted on the Server,
+				// update the app's cache
+				[[MPNSubscriptionCache sharedCache] removeMPNSubscriptionWithKey:oldMpnKey forItem:item];
+				
+			} else {
+				NSLog(@"DetailViewController: exception caught while deactivating MPN subscription during an update: %@", pse);
+				
+				// Show error alert
+				dispatch_async(dispatch_get_main_queue(), ^() {
+					[[[UIAlertView alloc] initWithTitle:@"Error while updating MPN subscription"
+												message:@"An error occurred and the MPN subscription could not be updated."
+											   delegate:nil
+									  cancelButtonTitle:@"Cancel"
+									  otherButtonTitles:nil] show];
+					
+					// Reset the threshold to its previous value
+					LSMPNInfo *oldMpnInfo= [[MPNSubscriptionCache sharedCache] getMPNSubscriptionWithKey:oldMpnKey forItem:item];
+					float oldValue= [[oldMpnInfo.customData objectForKey:@"threshold"] floatValue];
+					threshold.value= oldValue;
+					
+					[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+				});
+				
+				// Early bail
+				return;
+			}
+			
+		} @catch (NSException *e) {
+			NSLog(@"DetailViewController: exception caught while deactivating MPN subscription during an update: %@", e);
+			
+			// Show error alert
+			dispatch_async(dispatch_get_main_queue(), ^() {
+				[[[UIAlertView alloc] initWithTitle:@"Error while updating MPN subscription"
+											message:@"An error occurred and the MPN subscription could not be updated."
+										   delegate:nil
+								  cancelButtonTitle:@"Cancel"
+								  otherButtonTitles:nil] show];
+				
+				// Reset the threshold to its previous value
+				LSMPNInfo *oldMpnInfo= [[MPNSubscriptionCache sharedCache] getMPNSubscriptionWithKey:oldMpnKey forItem:item];
+				float oldValue= [[oldMpnInfo.customData objectForKey:@"threshold"] floatValue];
+				threshold.value= oldValue;
+				
+				[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+			});
+			
+			// Early bail
+			return;
+		}
 	}
 
 	// Prepare the table info
@@ -766,36 +741,39 @@
 	// Prepare the appropriate MPN info
 	LSMPNInfo *mpnInfo= nil;
 	if (greaterThan) {
-		mpnInfo= [LSMPNInfo mpnInfoWithSound:@"Default"
-									   badge:@"AUTO"
-									  format:@"Stock ${stock_name} rised over ${last_price}"];
+		mpnInfo= [LSMPNInfo mpnInfoWithTableInfo:tableInfo
+										   sound:@"Default"
+										   badge:@"AUTO"
+										  format:@"Stock ${stock_name} rised above ${last_price}"];
 		
 		// Set the appropriate trigger expression (Java syntax)
-		mpnInfo.triggerExpression= [NSString stringWithFormat:@"Double.parseDouble(${last_price}) > %.2f", value];
+		mpnInfo.triggerExpression= [NSString stringWithFormat:@"Double.parseDouble(${last_price}) > %.2f", threshold.value];
 
 	} else {
-		mpnInfo= [LSMPNInfo mpnInfoWithSound:@"Default"
-									   badge:@"AUTO"
-									  format:@"Stock ${stock_name} dropped below ${last_price}"];
+		mpnInfo= [LSMPNInfo mpnInfoWithTableInfo:tableInfo
+										   sound:@"Default"
+										   badge:@"AUTO"
+										  format:@"Stock ${stock_name} dropped below ${last_price}"];
 		
 		// Set the appropriate trigger expression (Java syntax)
-		mpnInfo.triggerExpression= [NSString stringWithFormat:@"Double.parseDouble(${last_price}) < %.2f", value];
+		mpnInfo.triggerExpression= [NSString stringWithFormat:@"Double.parseDouble(${last_price}) < %.2f", threshold.value];
 	}
 	
-	// Add the item name to match the MPN against the item list,
-	// and the subscription ID to remove the threshold when triggered
+	// Add the custom data to match the subscription against the MPN list
 	mpnInfo.customData= [NSDictionary dictionaryWithObjectsAndKeys:
 						 item, @"item",
+						 [NSString stringWithFormat:@"%.2f", threshold.value], @"threshold",
 						 @"${LS_MPN_subscription_ID}", @"subscriptionId",
 						 nil];
 
 	@try {
 		
 		// Activate the new MPN subscription
-		LSMPNKey *mpnKey= [[[Connector sharedConnector] client] activateMPNForTable:tableInfo withInfo:mpnInfo];
+		LSMPNKey *mpnKey= [[[Connector sharedConnector] client] activateMPN:mpnInfo];
+		threshold.thresholdId= mpnKey.subscriptionId;
 
-		// Add the MPN key on the app's storage
-		[[Storage sharedStorage] addThresholdValue:value MPNKey:mpnKey forItem:item];
+		// Update the app's cache
+		[[MPNSubscriptionCache sharedCache] addMPNSubscription:mpnInfo];
 	
 	} @catch (NSException *e) {
 		NSLog(@"DetailViewController: exception caught while activating MPN subscription: %@", e);
@@ -809,7 +787,7 @@
 							  otherButtonTitles:nil] show];
 
 			// Cleanup
-			[_chartController removeThresholdAtIndex:index];
+			[_chartController removeThreshold:threshold];
 		});
 
 	} @finally {
@@ -819,7 +797,7 @@
 	}
 }
 
-- (void) updateMPNSubscriptionWithIndex:(int)index whenGreaterThan:(BOOL)greaterThan value:(float)value {
+- (void) deleteMPNSubscriptionForThreshold:(ChartThreshold *)threshold {
 	// This method is always called from a background thread
 	
 	// Get and keep current item
@@ -828,155 +806,23 @@
 		item= _item;
 	}
 
-	// Retrieve the MPN key from the app's storage
-	LSMPNKey *mpnKey= [[Storage sharedStorage] MPNKeyOfThresholdAtIndex:index forItem:item];
-	
-	@try {
-		
-		// First delete the old MPN subscription
-		[[[Connector sharedConnector] client] deactivateMPN:mpnKey];
-		
-	} @catch (LSPushServerException *pse) {
-		if ((pse.errorCode == 46) || (pse.errorCode == 45)) {
-			// MPN subscription has been forcibly deleted on the Server,
-			// nothing else to do
-
-		} else {
-			NSLog(@"DetailViewController: exception caught while deactivating MPN subscription during an update: %@", pse);
-			
-			// Show error alert
-			dispatch_async(dispatch_get_main_queue(), ^() {
-				[[[UIAlertView alloc] initWithTitle:@"Error while updating MPN subscription"
-											message:@"An error occurred and the MPN subscription could not be updated."
-										   delegate:nil
-								  cancelButtonTitle:@"Cancel"
-								  otherButtonTitles:nil] show];
-				
-				// Reset the threshold to its previous value
-				float oldValue= [[Storage sharedStorage] valueOfThresholdAtIndex:index forItem:item];
-				[_chartController setThreshold:oldValue atIndex:index];
-
-				[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-			});
-
-			// Early bail
-			return;
-		}
-
-	} @catch (NSException *e) {
-		NSLog(@"DetailViewController: exception caught while deactivating MPN subscription during an update: %@", e);
-		
-		// Show error alert
-		dispatch_async(dispatch_get_main_queue(), ^() {
-			[[[UIAlertView alloc] initWithTitle:@"Error while updating MPN subscription"
-										message:@"An error occurred and the MPN subscription could not be updated."
-									   delegate:nil
-							  cancelButtonTitle:@"Cancel"
-							  otherButtonTitles:nil] show];
-			
-			// Reset the threshold to its previous value
-			float oldValue= [[Storage sharedStorage] valueOfThresholdAtIndex:index forItem:item];
-			[_chartController setThreshold:oldValue atIndex:index];
-			
-			[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-		});
-
-		// Early bail
-		return;
-	}
-		
-	// Prepare the table info
-	LSExtendedTableInfo *tableInfo= [LSExtendedTableInfo extendedTableInfoWithItems:[NSArray arrayWithObject:item]
-																			   mode:LSModeMerge
-																			 fields:DETAIL_FIELDS
-																		dataAdapter:DATA_ADAPTER
-																		   snapshot:NO];
-	
-	// Prepare the appropriate MPN info
-	LSMPNInfo *mpnInfo= nil;
-	if (greaterThan) {
-		mpnInfo= [LSMPNInfo mpnInfoWithSound:@"Default"
-									   badge:@"AUTO"
-									  format:@"Stock ${stock_name} rised above ${last_price}"];
-
-		
-		// Set the appropriate trigger expression (Java syntax)
-		mpnInfo.triggerExpression= [NSString stringWithFormat:@"Double.parseDouble(${last_price}) > %.2f", value];
-		
-	} else {
-		mpnInfo= [LSMPNInfo mpnInfoWithSound:@"Default"
-									   badge:@"AUTO"
-									  format:@"Stock ${stock_name} just dropped below ${last_price}"];
-		
-		// Set the appropriate trigger expression (Java syntax)
-		mpnInfo.triggerExpression= [NSString stringWithFormat:@"Double.parseDouble(${last_price}) < %.2f", value];
-	}
-	
-	// Add the item name to match the MPN against the item list,
-	// and the subscription ID to remove the threshold when triggered
-	mpnInfo.customData= [NSDictionary dictionaryWithObjectsAndKeys:
-						 item, @"item",
-						 @"${LS_MPN_subscription_ID}", @"subscriptionId",
-						 nil];
-		
-	@try {
-
-		// Activate the new MPN subscription
-		mpnKey= [[[Connector sharedConnector] client] activateMPNForTable:tableInfo withInfo:mpnInfo];
-		
-		// Update the value and MPN key on app's storage
-		[[Storage sharedStorage] updateThresholdValue:value MPNKey:mpnKey atIndex:index forItem:item];
-	
-	} @catch (NSException *e) {
-		NSLog(@"DetailViewController: exception caught while activating MPN subscription during an update: %@", e);
-		
-		// Show error alert
-		dispatch_async(dispatch_get_main_queue(), ^() {
-			[[[UIAlertView alloc] initWithTitle:@"Error while updating MPN subscription"
-										message:@"An error occurred and the MPN subscription could not be updated."
-									   delegate:nil
-							  cancelButtonTitle:@"Cancel"
-							  otherButtonTitles:nil] show];
-			
-			// Remove the threshold
-			[_chartController removeThresholdAtIndex:index];
-		});
-		
-		// Remove the threshold from the app's storage
-		[[Storage sharedStorage] deleteThresholdAtIndex:index forItem:item];
-
-	} @finally {
-		dispatch_async(dispatch_get_main_queue(), ^(){
-			[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-		});
-	}
-}
-
-- (void) deleteMPNSubscriptionWithIndex:(int)index {
-	// This method is always called from a background thread
-	
-	// Get and keep current item
-	NSString *item= nil;
-	@synchronized (self) {
-		item= _item;
-	}
-
-	// Retrieve the MPN key from the app's storage
-	LSMPNKey *mpnKey= [[Storage sharedStorage] MPNKeyOfThresholdAtIndex:index forItem:item];
+	// Get the MPN key
+	LSMPNKey *mpnKey= [LSMPNKey mpnKeyWithSubscriptionId:threshold.thresholdId];
 	
 	@try {
 
 		// Delete the MPN subscription
 		[[[Connector sharedConnector] client] deactivateMPN:mpnKey];
 		
-		// Remove the threshold from the app's storage
-		[[Storage sharedStorage] deleteThresholdAtIndex:index forItem:item];
+		// Update the app's cache
+		[[MPNSubscriptionCache sharedCache] removeMPNSubscriptionWithKey:mpnKey forItem:item];
 		
 	} @catch (LSPushServerException *pse) {
 		if ((pse.errorCode == 46) || (pse.errorCode == 45)) {
 			
-			// MPN subscription has been forcibly deleted on the Server
-			[[Storage sharedStorage] deleteThresholdAtIndex:index forItem:item];
+			// MPN subscription has been forcibly deleted on the Server,
+			// update the app's cache
+			[[MPNSubscriptionCache sharedCache] removeMPNSubscriptionWithKey:mpnKey forItem:item];
 			
 		} else
 			NSLog(@"DetailViewController: exception caught while deactivating MPN subscription: %@", pse);
