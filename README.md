@@ -26,7 +26,7 @@ Before you can build this demo you should complete this project with the Lighstr
 * drop into the `Lightstreamer client for iOS/lib` folder of this project the Lightstreamer_iOS_client.a file from the `/DOCS-SDKs/sdk_client_ios/lib` of [latest Lightstreamer distribution](http://www.lightstreamer.com/download).
 * drop into the `Lightstreamer client for iOS/include` folder of this project all the include files from the `/DOCS-SDKs/sdk_client_ios/include` of [latest Lightstreamer distribution](http://www.lightstreamer.com/download).
 
-## Deploy
+### Deploy
 
 With the current settings, the demo tries to connect to the demo server currently running on Lightstreamer website.
 The demo can be reconfigured and recompiled in order to connect to the local installation of Lightstreamer Server. You just have to change SERVER_URL, as defined in `Shared/StockListViewController.m`; a ":port" part can also be added.
