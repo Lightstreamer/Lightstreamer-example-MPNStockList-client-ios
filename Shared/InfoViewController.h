@@ -30,7 +30,7 @@
 #pragma mark -
 #pragma mark User actions
 
-- (IBAction) readTapped;
+- (IBAction) linkTapped;
 
 
 @end

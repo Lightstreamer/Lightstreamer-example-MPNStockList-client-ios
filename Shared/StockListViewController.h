@@ -18,29 +18,25 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <LSConnectionDelegate.h>
-#import <LSTableDelegate.h>
 
 
 @class StockListView;
-@class LSClient;
-@class LSSubscribedTableKey;
+@class DetailViewController;
 
-@interface StockListViewController : UITableViewController <LSConnectionDelegate, LSTableDelegate, UIPopoverControllerDelegate> {
+@interface StockListViewController : UITableViewController <LSTableDelegate, UIPopoverControllerDelegate, UINavigationControllerDelegate> {
 	StockListView *_stockListView;
 	
-	NSArray *_itemNames;
-	NSArray *_fieldNames;
-	
-	LSClient *_client;
+	BOOL _subscribed;
 	LSSubscribedTableKey *_tableKey;
+	
+	dispatch_queue_t _backgroundQueue;
+
+	NSIndexPath *_selectedRow;
 	
 	NSMutableDictionary *_itemUpdated;
 	NSMutableDictionary *_itemData;
 	
 	NSMutableSet *_rowsToBeReloaded;
-	
-	BOOL _polling;
 	
 	UIBarButtonItem *_infoButton;
 	UIPopoverController *_popoverInfoController;
@@ -48,40 +44,14 @@
 	UIBarButtonItem *_statusButton;
 	UIPopoverController *_popoverStatusController;
     
-    UIImage *_disconnectedIcon;
-    UIImage *_streamingIcon;
-    UIImage *_pollingIcon;
-    UIImage *_stalledIcon;
+	DetailViewController *_detailController;
 }
 
 
 #pragma mark -
-#pragma mark User actions
+#pragma mark Communication with App delegate
 
-- (void) infoTapped;
-- (void) statusTapped;
-
-
-#pragma mark -
-#pragma mark Lightstreamer management
-
-- (void) connectToLightstreamer;
-- (void) subscribeItems;
-
-
-#pragma mark -
-#pragma mark Internals
-
-- (void) reloadTableRows;
-
-#pragma mark -
-#pragma mark Special effects
-
-- (void) flashLabel:(UILabel *)label withColor:(UIColor *)color;
-- (void) unflashLabel:(UILabel *)label;
-
-- (void) flashImage:(UIImageView *)imageView withColor:(UIColor *)color;
-- (void) unflashImage:(UIImageView *)imageView;
+- (void) handleMPN:(NSDictionary *)mpn;
 
 
 @end

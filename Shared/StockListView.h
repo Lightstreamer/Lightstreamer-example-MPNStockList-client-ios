@@ -21,14 +21,14 @@
 
 
 @interface StockListView : UIView {
-	IBOutlet UITableView *_table;
+	IBOutlet __weak UITableView *_table;
 }
 
 
 #pragma mark -
 #pragma mark Properties
 
-@property (nonatomic, readonly) UITableView *table;
+@property (weak, nonatomic, readonly) UITableView *table;
 
 
 @end

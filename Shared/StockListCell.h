@@ -21,34 +21,34 @@
 
 
 @interface StockListCell : UITableViewCell {
-	IBOutlet UILabel *_nameLabel;
-	IBOutlet UILabel *_lastLabel;
-	IBOutlet UILabel *_timeLabel;
-	IBOutlet UIImageView *_dirImage;
-	IBOutlet UILabel *_changeLabel;
-	IBOutlet UILabel *_bidLabel;
-	IBOutlet UILabel *_askLabel;
-	IBOutlet UILabel *_minLabel;
-	IBOutlet UILabel *_maxLabel;
-	IBOutlet UILabel *_refLabel;
-	IBOutlet UILabel *_openLabel;
+	IBOutlet __weak UILabel *_nameLabel;
+	IBOutlet __weak UILabel *_lastLabel;
+	IBOutlet __weak UILabel *_timeLabel;
+	IBOutlet __weak UIImageView *_dirImage;
+	IBOutlet __weak UILabel *_changeLabel;
+	IBOutlet __weak UILabel *_bidLabel;
+	IBOutlet __weak UILabel *_askLabel;
+	IBOutlet __weak UILabel *_minLabel;
+	IBOutlet __weak UILabel *_maxLabel;
+	IBOutlet __weak UILabel *_refLabel;
+	IBOutlet __weak UILabel *_openLabel;
 }
 
 
 #pragma mark -
 #pragma mark Properties
 
-@property (nonatomic, readonly) UILabel *nameLabel;
-@property (nonatomic, readonly) UILabel *lastLabel;
-@property (nonatomic, readonly) UILabel *timeLabel;
-@property (nonatomic, readonly) UIImageView *dirImage;
-@property (nonatomic, readonly) UILabel *changeLabel;
-@property (nonatomic, readonly) UILabel *bidLabel;
-@property (nonatomic, readonly) UILabel *askLabel;
-@property (nonatomic, readonly) UILabel *minLabel;
-@property (nonatomic, readonly) UILabel *maxLabel;
-@property (nonatomic, readonly) UILabel *refLabel;
-@property (nonatomic, readonly) UILabel *openLabel;
+@property (weak, nonatomic, readonly) UILabel *nameLabel;
+@property (weak, nonatomic, readonly) UILabel *lastLabel;
+@property (weak, nonatomic, readonly) UILabel *timeLabel;
+@property (weak, nonatomic, readonly) UIImageView *dirImage;
+@property (weak, nonatomic, readonly) UILabel *changeLabel;
+@property (weak, nonatomic, readonly) UILabel *bidLabel;
+@property (weak, nonatomic, readonly) UILabel *askLabel;
+@property (weak, nonatomic, readonly) UILabel *minLabel;
+@property (weak, nonatomic, readonly) UILabel *maxLabel;
+@property (weak, nonatomic, readonly) UILabel *refLabel;
+@property (weak, nonatomic, readonly) UILabel *openLabel;
 
 
 @end

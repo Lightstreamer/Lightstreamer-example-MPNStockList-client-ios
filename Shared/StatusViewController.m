@@ -36,17 +36,12 @@
 	return self;
 }
 
-- (void) dealloc {
-	[super dealloc];
-}
-
 
 #pragma mark -
 #pragma mark Methods of UIViewController
 
 - (void) loadView {
-    BOOL preiOS7= (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1);
-	NSArray *niblets= [[NSBundle mainBundle] loadNibNamed:(preiOS7 ? DEVICE_XIB(@"StatusView") : DEVICE_XIB(@"StatusView_iOS7")) owner:self options:NULL];
+	NSArray *niblets= [[NSBundle mainBundle] loadNibNamed:DEVICE_XIB(@"StatusView") owner:self options:NULL];
 	_statusView= (StatusView *) [niblets lastObject];
 	
 	self.view= _statusView;

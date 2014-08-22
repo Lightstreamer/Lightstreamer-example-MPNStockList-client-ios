@@ -21,16 +21,16 @@
 
 
 @interface InfoView : UIView {
-	IBOutlet UIImageView *_logoImage;
-	IBOutlet UIButton *_readButton;
+	IBOutlet __weak UIImageView *_logoImage;
+	IBOutlet __weak UIButton *_readButton;
 }
 
 
 #pragma mark -
 #pragma mark Properties
 
-@property (nonatomic, readonly) UIImageView *logoImage;
-@property (nonatomic, readonly) UIButton *readButton;
+@property (weak, nonatomic, readonly) UIImageView *logoImage;
+@property (weak, nonatomic, readonly) UIButton *readButton;
 
 
 @end

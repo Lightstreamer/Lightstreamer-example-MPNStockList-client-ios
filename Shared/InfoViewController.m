@@ -36,15 +36,11 @@
 	return self;
 }
 
-- (void) dealloc {
-	[super dealloc];
-}
-
 
 #pragma mark -
 #pragma mark User actions
 
-- (IBAction) readTapped {
+- (IBAction) linkTapped {
 	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.lightstreamer.com/"]];
 }
 
@@ -53,8 +49,7 @@
 #pragma mark Methods of UIViewController
 
 - (void) loadView {
-    BOOL preiOS7= (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1);
-	NSArray *niblets= [[NSBundle mainBundle] loadNibNamed:(preiOS7 ? DEVICE_XIB(@"InfoView") : DEVICE_XIB(@"InfoView_iOS7")) owner:self options:NULL];
+	NSArray *niblets= [[NSBundle mainBundle] loadNibNamed:DEVICE_XIB(@"InfoView") owner:self options:NULL];
 	_infoView= (InfoView *) [niblets lastObject];
 	
 	self.view= _infoView;
