@@ -291,7 +291,7 @@
 			@try {
 				
 				// Activate the new MPN subscription
-				[[[Connector sharedConnector] client] activateMPN:mpnInfo];
+				_priceMpnKey= [[[Connector sharedConnector] client] activateMPN:mpnInfo];
 
 				// Update the app's cache
 				[[MPNSubscriptionCache sharedCache] addMPNSubscription:mpnInfo];
@@ -326,6 +326,8 @@
 				
 				// Update the app's cache
 				[[MPNSubscriptionCache sharedCache] removeMPNSubscriptionWithKey:_priceMpnKey forItem:item];
+
+				_priceMpnKey= nil;
 				
 			} @catch (LSPushServerException *pse) {
 				if ((pse.errorCode == 46) || (pse.errorCode == 45)) {
@@ -333,6 +335,8 @@
 					// MPN subscription has been forcibly deleted on the Server,
 					// update the app's cache
 					[[MPNSubscriptionCache sharedCache] removeMPNSubscriptionWithKey:_priceMpnKey forItem:item];
+					
+					_priceMpnKey= nil;
 					
 				} else {
 					NSLog(@"DetailViewController: exception caught while deactivating MPN subscription: %@", pse);
