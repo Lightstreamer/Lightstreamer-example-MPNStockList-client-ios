@@ -45,7 +45,7 @@ In order to enable them, a few more steps are necessary:<br>
 Steps 1-2 are common business for the development of any application that must receive mobile push notifications, more information may be found on the Apple Developers Portal, e.g.: [https://developer.apple.com/notifications/](https://developer.apple.com/notifications/).<br>
 Step 3-5 are required by the Server to send mobile push notifications to the correct application, with the correct certificate and applying a reasonable security filtering on incoming requests. More information may be found in the configuration file itself.<br>
 Step 6 is required by the Server to store mobile push notifications subscriptions and retrieve them after a Server restart.<br>
-Finally, step 7 is need by the Server to active its <b>MPN module<b>, which is disabled by default.<br>
+Finally, step 7 is need by the Server to active its <b>MPN module</b>, which is disabled by default.<br>
 
 ## See Also
 
