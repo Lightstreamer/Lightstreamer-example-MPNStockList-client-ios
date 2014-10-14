@@ -1,4 +1,4 @@
-# Lightstreamer - Stock-List Demo - iOS Client
+# Lightstreamer - Stock-List Demo with APNs Push Notifications - iOS Client
 
 <!-- START DESCRIPTION lightstreamer-example-stocklist-client-ios -->
 
