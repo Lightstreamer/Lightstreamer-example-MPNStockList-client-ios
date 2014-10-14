@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-#define PUSH_SERVER_URL            (@"http://push.lightstreamer.com")
-//#define PUSH_SERVER_URL          (@"http://10.0.1.24:8080/")
-#define ADAPTER_SET                (@"DEMO")
-#define DATA_ADAPTER               (@"QUOTE_ADAPTER")
+#define PUSH_SERVER_URL            (@"http://localhost:8080/")
+//#define PUSH_SERVER_URL          (@"http://push.lightstreamer.com")
+#define ADAPTER_SET                (@"STOCKLISTDEMO")
+#define DATA_ADAPTER               (@"STOCKLIST_ADAPTER")
 
 #define NUMBER_OF_ITEMS            (30)
 #define NUMBER_OF_LIST_FIELDS      (4)
@@ -63,3 +63,11 @@
 
 #define STATUS_IPAD_WIDTH          (400.0)
 #define STATUS_IPAD_HEIGHT         (200.0)
+
+// Thanks to Carl Jahn for the following macros
+// https://github.com/carlj/CJAMacros/blob/master/CJAMacros/CJAMacros.h
+#define iOS_EQ(v)                  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedSame)
+#define iOS_GT(v)                  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedDescending)
+#define iOS_GE(v)                  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
+#define iOS_LT(v)                  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedAscending)
+#define iOS_LE(v)                  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedDescending)

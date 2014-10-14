@@ -24,7 +24,6 @@
 #import "InfoViewController.h"
 #import "StatusViewController.h"
 #import "Connector.h"
-#import "MPNSubscriptionCache.h"
 #import "SpecialEffects.h"
 #import "Constants.h"
 #import "AppDelegate_iPad.h"
@@ -338,8 +337,12 @@
 	
 	// On the iPhone the Detail View Controller is created on demand and pushed with
 	// the navigation controller
-	if (!_detailController)
+	if (!_detailController) {
 		_detailController= [[DetailViewController alloc] init];
+		
+		// Ensure the view is loaded
+		[_detailController view];
+	}
 
 	// Update the item on the detail controller
 	[_detailController changeItem:[TABLE_ITEMS objectAtIndex:indexPath.row]];
@@ -489,7 +492,7 @@
 			NSLog(@"StockListViewController: deleting triggered MPN subscriptions...");
 			
 			@try {
-				[[[Connector sharedConnector] client] deactivateMPNsWithStatus:LSMPNStatusTriggered];
+				[[[Connector sharedConnector] client] deactivateMPNsWithStatus:LSMPNSubscriptionStatusTriggered];
 				
 				NSLog(@"StockListViewController: triggered MPN subscriptions deleted");
 				
@@ -500,24 +503,10 @@
 			NSLog(@"StockListViewController: downloading active MPN subscriptions...");
 			
 			@try {
-				NSArray *mpnInfos= [[[Connector sharedConnector] client] inquireMPNsWithStatus:LSMPNStatusActive];
+				[[[Connector sharedConnector] client] inquireMPNsWithStatus:LSMPNSubscriptionStatusActive];
 				
 				NSLog(@"StockListViewController: active MPN subscriptions downloaded");
 				
-				[[MPNSubscriptionCache sharedCache] updateWithInfos:mpnInfos];
-				
-				NSLog(@"StockListViewController: MPN subscription cache updated");
-				
-			} @catch (LSPushServerException *pse) {
-				if (pse.errorCode == 45) {
-					
-					// MPN subscription has been forcibly deleted on the Server
-					[[MPNSubscriptionCache sharedCache] clearMPNSubscriptions];
-				
-				} else {
-					NSLog(@"StockListViewController: download of active MPN subscriptinos failed with exception: %@", pse);
-				}
-
 			} @catch (NSException *e) {
 				NSLog(@"StockListViewController: download of active MPN subscriptinos failed with exception: %@", e);
 			}
@@ -567,14 +556,20 @@
 	
 	if (subscriptionId) {
 		
-		// It's a triggered threshold, update the app's cache
-		LSMPNKey *mpnKey= [LSMPNKey mpnKeyWithSubscriptionId:subscriptionId];
-		[[MPNSubscriptionCache sharedCache] removeMPNSubscriptionWithKey:mpnKey forItem:item];
-		
-		// Reload thresholds: if we are already watching this item this avoids a
-		// call to a changeItem on the detail controller, which would clear the chart
-		if (itemIsSelected && subscriptionId)
-			[_detailController updateViewForMPNStatus];
+		// It's a triggered threshold, deactivate it in background
+		dispatch_async(_backgroundQueue, ^() {
+			LSMPNKey *mpnKey= [LSMPNKey mpnKeyWithSubscriptionId:subscriptionId];
+			LSMPNSubscription *mpnSubscription= [[[Connector sharedConnector] client] cachedMPNSubscriptionForKey:mpnKey];
+			[mpnSubscription deactivate];
+			
+			// Reload thresholds: if we are already watching this item this avoids a
+			// call to a changeItem on the detail controller, which would clear the chart
+			if (itemIsSelected && subscriptionId) {
+				dispatch_async(dispatch_get_main_queue(), ^() {
+					[_detailController updateViewForMPNStatus];
+				});
+			}
+		});
 	}
 	
 	// Add View and Skip buttons if the item is not currently selected

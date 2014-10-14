@@ -19,7 +19,6 @@
 
 #import "AppDelegate_iPhone.h"
 #import "StockListViewController.h"
-#import "MPNSubscriptionCache.h"
 #import "Constants.h"
 
 
@@ -50,9 +49,37 @@
 	_window.rootViewController= _navController;
     [_window makeKeyAndVisible];
 	
-	// MPN registration
-	[application registerForRemoteNotificationTypes:UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound];
-    
+    // MPN registration
+    if (iOS_LT(@"8.0")) {
+        
+        // MPN Registration for iOS < 8.0
+        [application registerForRemoteNotificationTypes:UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound];
+        
+    } else {
+        
+		// MPN Registration for iOS >= 8.0:
+		// first prepare an action for user notifications
+		UIMutableUserNotificationAction *viewAction= [[UIMutableUserNotificationAction alloc] init];
+		viewAction.identifier= @"VIEW_IDENTIFIER";
+		viewAction.title= @"View Stock Details";
+		viewAction.destructive= NO;
+		viewAction.authenticationRequired= NO;
+		
+		// Now prepare a category for user notifications
+		UIMutableUserNotificationCategory *stockPriceCategory= [[UIMutableUserNotificationCategory alloc] init];
+		stockPriceCategory.identifier = @"STOCK_PRICE_CATEGORY";
+		[stockPriceCategory setActions:@[viewAction] forContext:UIUserNotificationActionContextDefault];
+		[stockPriceCategory setActions:@[viewAction] forContext:UIUserNotificationActionContextMinimal];
+		
+		NSSet *categories= [NSSet setWithObjects:stockPriceCategory, nil];
+		
+		// Now register for user notifications
+		UIUserNotificationType types= UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert;
+		UIUserNotificationSettings *mySettings= [UIUserNotificationSettings settingsForTypes:types categories:categories];
+		
+		[[UIApplication sharedApplication] registerUserNotificationSettings:mySettings];
+    }
+	
 	// Let the StockList View Controller handle any pending MPN
 	NSDictionary *mpn= [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
 	if (mpn)
@@ -71,6 +98,17 @@
 		// Notify Lightstreamer that the app's icon badge has been reset
 		[LSClient applicationMPNBadgeReset];
 	});
+}
+
+- (void) application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings {
+	// This method is iOS >= 8.0 only
+	
+	UIUserNotificationType allowedTypes= [notificationSettings types];
+	
+	NSLog(@"AppDelegate: registration for user notifications succeeded with types: %d", (int) allowedTypes);
+	
+	// Finally register for remote notifications
+	[application registerForRemoteNotifications];
 }
 
 - (void) application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {

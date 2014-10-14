@@ -15,7 +15,6 @@
 		2860E32E111B888700E27156 /* AppDelegate_iPad.m in Sources */ = {isa = PBXBuildFile; fileRef = 2860E32C111B888700E27156 /* AppDelegate_iPad.m */; };
 		2860E32F111B888700E27156 /* MainWindow_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2860E32D111B888700E27156 /* MainWindow_iPad.xib */; };
 		288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765FC0DF74451002DB57D /* CoreGraphics.framework */; };
-		8C00FE6118842544009A4F34 /* MPNSubscriptionCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C00FE6018842544009A4F34 /* MPNSubscriptionCache.m */; };
 		8C00FE641884390B009A4F34 /* Connector.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C00FE631884390B009A4F34 /* Connector.m */; };
 		8C17AE6A18C78DFA00363347 /* libLightstreamer_iOS_client_64.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CD8D57E186879690021E803 /* libLightstreamer_iOS_client_64.a */; };
 		8C2F040F1869D90500012B38 /* SpecialEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C2F040E1869D90500012B38 /* SpecialEffects.m */; };
@@ -89,8 +88,6 @@
 		288765FC0DF74451002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Shared/main.m; sourceTree = "<group>"; };
 		32CA4F630368D1EE00C91783 /* StockList_Demo_for_iOS_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StockList_Demo_for_iOS_Prefix.pch; sourceTree = "<group>"; };
-		8C00FE5F18842544009A4F34 /* MPNSubscriptionCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MPNSubscriptionCache.h; path = Shared/MPNSubscriptionCache.h; sourceTree = "<group>"; };
-		8C00FE6018842544009A4F34 /* MPNSubscriptionCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MPNSubscriptionCache.m; path = Shared/MPNSubscriptionCache.m; sourceTree = "<group>"; };
 		8C00FE621884390B009A4F34 /* Connector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Connector.h; path = Shared/Connector.h; sourceTree = "<group>"; };
 		8C00FE631884390B009A4F34 /* Connector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Connector.m; path = Shared/Connector.m; sourceTree = "<group>"; };
 		8C2F040D1869D90500012B38 /* SpecialEffects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SpecialEffects.h; path = Shared/SpecialEffects.h; sourceTree = "<group>"; };
@@ -260,8 +257,6 @@
 				8CED1861132FD32500F92DFE /* StatusView.m */,
 				8C00FE621884390B009A4F34 /* Connector.h */,
 				8C00FE631884390B009A4F34 /* Connector.m */,
-				8C00FE5F18842544009A4F34 /* MPNSubscriptionCache.h */,
-				8C00FE6018842544009A4F34 /* MPNSubscriptionCache.m */,
 				8C2F040D1869D90500012B38 /* SpecialEffects.h */,
 				8C2F040E1869D90500012B38 /* SpecialEffects.m */,
 				8CD113B812A021000047C173 /* Constants.h */,
@@ -348,9 +343,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		1D6058900D05DD3D006BFB54 /* StockList Demo for iOS */ = {
+		1D6058900D05DD3D006BFB54 /* StockList Demo for iOS with MPN */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "StockList Demo for iOS" */;
+			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "StockList Demo for iOS with MPN" */;
 			buildPhases = (
 				1D60588D0D05DD3D006BFB54 /* Resources */,
 				1D60588E0D05DD3D006BFB54 /* Sources */,
@@ -360,7 +355,7 @@
 			);
 			dependencies = (
 			);
-			name = "StockList Demo for iOS";
+			name = "StockList Demo for iOS with MPN";
 			productName = "StockList Demo for iOS";
 			productReference = 1D6058910D05DD3D006BFB54 /* Lightstreamer StockList.app */;
 			productType = "com.apple.product-type.application";
@@ -379,7 +374,7 @@
 					};
 				};
 			};
-			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "StockList Demo for iOS" */;
+			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "StockList Demo for iOS with MPN" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
@@ -393,7 +388,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				1D6058900D05DD3D006BFB54 /* StockList Demo for iOS */,
+				1D6058900D05DD3D006BFB54 /* StockList Demo for iOS with MPN */,
 			);
 		};
 /* End PBXProject section */
@@ -472,7 +467,6 @@
 				8CD8D58718688CDA0021E803 /* DetailViewController.m in Sources */,
 				8C8A589218BE4B00005E77B4 /* ChartThreshold.m in Sources */,
 				8C7518E41875BBA700CB61D5 /* UIAlertView+BlockExtensions.m in Sources */,
-				8C00FE6118842544009A4F34 /* MPNSubscriptionCache.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -559,7 +553,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "StockList Demo for iOS" */ = {
+		1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "StockList Demo for iOS with MPN" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1D6058940D05DD3E006BFB54 /* Debug */,
@@ -568,7 +562,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "StockList Demo for iOS" */ = {
+		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "StockList Demo for iOS with MPN" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C01FCF4F08A954540054247B /* Debug */,

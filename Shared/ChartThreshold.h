@@ -14,7 +14,7 @@
 @interface ChartThreshold : NSObject {
 	__weak ChartView *_chartView;
 	
-	NSString *_thresholdId;
+	LSMPNSubscription *_mpnSubscription;
 	float _value;
 }
 
@@ -36,7 +36,7 @@
 
 @property (nonatomic, readonly) ChartView *chartView;
 @property (nonatomic, assign) float value;
-@property (nonatomic, copy) NSString *thresholdId;
+@property (nonatomic, strong) LSMPNSubscription *mpnSubscription;
 
 
 @end

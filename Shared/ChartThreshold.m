@@ -54,7 +54,7 @@
 	[_chartView setNeedsDisplay];
 }
 
-@synthesize thresholdId= _thresholdId;
+@synthesize mpnSubscription= _mpnSubscription;
 
 
 @end
