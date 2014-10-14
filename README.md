@@ -1,6 +1,6 @@
 # Lightstreamer - Stock-List Demo with APNs Push Notifications - iOS Client
 
-<!-- START DESCRIPTION lightstreamer-example-stocklist-client-ios -->
+<!-- START DESCRIPTION lightstreamer-example-mpnstocklist-client-ios -->
 
 This project contains an example of an application for iPhone and iPad that employs the [Lightstreamer iOS Client library](http://www.lightstreamer.com/docs/client_ios_api/index.html), with use of mobile push notifications (MPN).
 
@@ -47,7 +47,7 @@ If mobile push notifications are not required, please refer to a simplified vers
 ### Lightstreamer Adapters Needed by This Demo Client
 
 * [Lightstreamer - Stock- List Demo - Java Adapter](https://github.com/Weswit/Lightstreamer-example-Stocklist-adapter-java)
-* [Lightstreamer - MPN Stock-List Demo Metadata - Java Adapter](https://github.com/Weswit/Lightstreamer-example-StockListMetadata-adapter-java)
+* [Lightstreamer - MPN Stock-List Demo Metadata - Java Adapter](https://github.com/Weswit/Lightstreamer-example-MPNStockListMetadata-adapter-java)
 
 ### Related Projects
 
