@@ -36,7 +36,7 @@ Done this, the project should compile with no errors.
 
 A full local deploy of this app requires a Lightstreamer Server 6.0 installation with appropriate Mobile Push Notifications (MPN) module configuration. A detailed step by step guide for setting up the server and configuring the client is available in the README of the following project:
 
-* [Lightstreamer - MPN Stock-List Demo Metadata - Java Adapter](https://github.com/Weswit/Lightstreamer-example-StockListMetadata-adapter-java)
+* [Lightstreamer - MPN Stock-List Demo Metadata - Java Adapter](https://github.com/Weswit/Lightstreamer-example-MPNStockListMetadata-adapter-java)
 
 If mobile push notifications are not required, please refer to a simplified version of this demo available here:
 
