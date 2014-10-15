@@ -4,6 +4,8 @@
 
 This project contains an example of an application for iPhone and iPad that employs the [Lightstreamer iOS Client library](http://www.lightstreamer.com/docs/client_ios_api/index.html), with use of mobile push notifications (MPN).
 
+A simpler version, without mobile push notifications support, is also available: [Lightstreamer - Stock-List Demo - iOS Client](https://github.com/Weswit/Lightstreamer-example-StockList-client-ios).
+
 ## Live Demo
 
 [![screenshot](screenshot_newlarge.png)](http://itunes.apple.com/us/app/lightstreamer-stocklist/id430328811#)<br>
@@ -34,13 +36,9 @@ Done this, the project should compile with no errors.
 
 ### Compile and Run
 
-A full local deploy of this app requires a Lightstreamer Server 6.0 installation with appropriate Mobile Push Notifications (MPN) module configuration. A detailed step by step guide for setting up the server and configuring the client is available in the README of the following project:
+A full local deploy of this app requires a Lightstreamer Server 6.0 or greater installation with appropriate Mobile Push Notifications (MPN) module configuration. A detailed step by step guide for setting up the server and configuring the client is available in the README of the following project:
 
 * [Lightstreamer - MPN Stock-List Demo Metadata - Java Adapter](https://github.com/Weswit/Lightstreamer-example-MPNStockListMetadata-adapter-java)
-
-If mobile push notifications are not required, please refer to a simplified version of this demo available here:
-
-* [Lightstreamer - Stock-List Demo - iOS Client](https://github.com/Weswit/Lightstreamer-example-StockList-client-ios)
 
 ## See Also
 
@@ -53,15 +51,9 @@ If mobile push notifications are not required, please refer to a simplified vers
 
 * [Lightstreamer - Stock-List Demos - HTML Clients](https://github.com/Weswit/Lightstreamer-example-Stocklist-client-javascript)
 * [Lightstreamer - Stock-List Demo - iOS Client](https://github.com/Weswit/Lightstreamer-example-StockList-client-ios)
+* [Lightstreamer - Stock-List Demo with GCM Push Notifications - Android Client](https://github.com/Weswit/Lightstreamer-example-MPNStockList-client-android)
 * [Lightstreamer - Basic Stock-List Demo - OS X Client](https://github.com/Weswit/Lightstreamer-example-StockList-client-osx)
-* [Lightstreamer - Basic Stock-List Demo - Android Client](https://github.com/Weswit/Lightstreamer-example-StockList-client-android)
 * [Lightstreamer - Basic Stock-List Demo - Windows Phone Client](https://github.com/Weswit/Lightstreamer-example-StockList-client-winphone)
-* [Lightstreamer - Basic Stock-List and Round-Trip Demo - BlackBerry Client](https://github.com/Weswit/Lightstreamer-example-StockList-client-blackberry)
-* [Lightstreamer - Basic Stock-List Demo jQuery (jqGrid) Client](https://github.com/Weswit/Lightstreamer-example-StockList-client-jquery)
-* [Lightstreamer - Stock-List Demo - Dojo Toolkit Client](https://github.com/Weswit/Lightstreamer-example-StockList-client-dojo)
-* [Lightstreamer - Basic Stock-List Demo - Java SE (Swing) Client](https://github.com/Weswit/Lightstreamer-example-StockList-client-java)
-* [Lightstreamer - Basic Stock-List Demo - .NET Client](https://github.com/Weswit/Lightstreamer-example-StockList-client-dotnet)
-* [Lightstreamer - Stock-List Demos - Flex Clients](https://github.com/Weswit/Lightstreamer-example-StockList-client-flex)
 
 ## Lightstreamer Compatibility Notes
 
