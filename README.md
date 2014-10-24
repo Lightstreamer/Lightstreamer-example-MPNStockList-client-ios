@@ -8,8 +8,8 @@ A simpler version, without mobile push notifications support, is also available:
 
 ## Live Demo
 
-[![screenshot](screenshot_newlarge.png)](http://itunes.apple.com/us/app/lightstreamer-stocklist/id430328811#)<br>
-###[![](http://demos.lightstreamer.com/site/img/play.png) View live demo](http://itunes.apple.com/us/app/lightstreamer-stocklist/id430328811#)<br>
+[![screenshot](screenshot_newlarge.png)](https://itunes.apple.com/us/app/lightstreamer-stock-list-apns/id430328811?mt=8)<br>
+###[![](http://demos.lightstreamer.com/site/img/play.png) View live demo](https://itunes.apple.com/us/app/lightstreamer-stock-list-apns/id430328811?mt=8)<br>
 
 ## Details
 
@@ -19,7 +19,7 @@ This app uses the <b>iOS Client API for Lightstreamer</b> to handle the communic
 
 ## Install
 
-Binaries for the application are not provided, but it may be downloaded from the App Store at [this address](https://itunes.apple.com/app/lightstreamer-stocklist/id430328811?l=en&mt=8). The downloaded app will connect to Lightstreamer's online demo server.
+Binaries for the application are not provided, but it may be downloaded from the App Store at [this address](https://itunes.apple.com/us/app/lightstreamer-stock-list-apns/id430328811?mt=8). The downloaded app will connect to Lightstreamer's online demo server.
 
 ## Build
 
