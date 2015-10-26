@@ -3,7 +3,7 @@
 //  StockList Demo for iOS
 //
 //  Created by Gianluca Bertani on 26/02/14.
-//  Copyright (c) 2014 Weswit srl. All rights reserved.
+//  Copyright (c) Lightstreamer Srl
 //
 
 #import "ChartThreshold.h"
