@@ -208,7 +208,7 @@
 	return YES;
 }
 
-- (NSUInteger) supportedInterfaceOrientations {
+- (UIInterfaceOrientationMask) supportedInterfaceOrientations {
 	if (DEVICE_IPAD)
 		return UIInterfaceOrientationMaskLandscape;
 	else
