@@ -77,7 +77,7 @@ on threshold. Drag out of chart to delete</string>
                     <size key="shadowOffset" width="0.0" height="0.0"/>
                 </label>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Ask Size" lineBreakMode="tailTruncation" minimumFontSize="10" adjustsFontSizeToFit="NO" id="UpC-KY-FhQ">
-                    <rect key="frame" x="170" y="455" width="45" height="23"/>
+                    <rect key="frame" x="170" y="455" width="50" height="23"/>
                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <fontDescription key="fontDescription" type="boldSystem" pointSize="11"/>
                     <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -101,7 +101,7 @@ on threshold. Drag out of chart to delete</string>
                     <size key="shadowOffset" width="0.0" height="0.0"/>
                 </label>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Change" lineBreakMode="tailTruncation" minimumFontSize="10" adjustsFontSizeToFit="NO" id="VX8-cU-Kf5">
-                    <rect key="frame" x="20" y="393" width="40" height="23"/>
+                    <rect key="frame" x="20" y="393" width="45" height="23"/>
                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <fontDescription key="fontDescription" type="boldSystem" pointSize="11"/>
                     <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
