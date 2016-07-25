@@ -57,5 +57,5 @@ A full local deploy of this app requires a Lightstreamer Server 6.0 or greater i
 
 ## Lightstreamer Compatibility Notes
 
-* Compatible with Lightstreamer iOS Client Library version 1.4 or newer.
+* Compatible with Lightstreamer iOS Client API version 1.4 to 1.4.3. Not yet compatible with Lightstreamer iOS Client API Unified version.
 * For Lightstreamer Allegro (+ iOS Client API support), Presto, Vivace, version 6.0 or greater.
