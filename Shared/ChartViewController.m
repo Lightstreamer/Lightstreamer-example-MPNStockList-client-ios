@@ -41,7 +41,7 @@
 		_delegate= delegate;
 		
 		// Prepare reference date (release date of SDK 1.3 a1)
-		NSCalendar *calendar= [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+		NSCalendar *calendar= [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
 		[calendar setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"GMT"]];
 
 		NSDateComponents *comps= [[NSDateComponents alloc] init];
@@ -183,12 +183,12 @@
 	
 	// Compute the full date knowing the Server lives in the West European time zone
 	// (which is not simply GMT, as it may undergo daylight savings)
-	NSCalendar *calendar= [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+	NSCalendar *calendar= [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
 	NSTimeZone *timeZone= [NSTimeZone timeZoneWithName:SERVER_TIMEZONE];
 	[calendar setTimeZone:timeZone];
 	
-	NSDateComponents *nowComponents= [calendar components:(NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit) fromDate:[NSDate date]];
-	NSDateComponents *timeComponents=[calendar components:(NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit) fromDate:updateTime];
+	NSDateComponents *nowComponents= [calendar components:(NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear) fromDate:[NSDate date]];
+	NSDateComponents *timeComponents=[calendar components:(NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond) fromDate:updateTime];
 	
 	NSDateComponents *dateComponents= [[NSDateComponents alloc] init];
 	[dateComponents setTimeZone:timeZone]; // The timezone is known a-priori

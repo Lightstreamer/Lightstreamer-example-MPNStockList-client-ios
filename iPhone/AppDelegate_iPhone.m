@@ -49,36 +49,26 @@
 	_window.rootViewController= _navController;
     [_window makeKeyAndVisible];
 	
-    // MPN registration
-    if (iOS_LT(@"8.0")) {
-        
-        // MPN Registration for iOS < 8.0
-        [application registerForRemoteNotificationTypes:UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound];
-        
-    } else {
-        
-		// MPN Registration for iOS >= 8.0:
-		// first prepare an action for user notifications
-		UIMutableUserNotificationAction *viewAction= [[UIMutableUserNotificationAction alloc] init];
-		viewAction.identifier= @"VIEW_IDENTIFIER";
-		viewAction.title= @"View Stock Details";
-		viewAction.destructive= NO;
-		viewAction.authenticationRequired= NO;
-		
-		// Now prepare a category for user notifications
-		UIMutableUserNotificationCategory *stockPriceCategory= [[UIMutableUserNotificationCategory alloc] init];
-		stockPriceCategory.identifier = @"STOCK_PRICE_CATEGORY";
-		[stockPriceCategory setActions:@[viewAction] forContext:UIUserNotificationActionContextDefault];
-		[stockPriceCategory setActions:@[viewAction] forContext:UIUserNotificationActionContextMinimal];
-		
-		NSSet *categories= [NSSet setWithObjects:stockPriceCategory, nil];
-		
-		// Now register for user notifications
-		UIUserNotificationType types= UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert;
-		UIUserNotificationSettings *mySettings= [UIUserNotificationSettings settingsForTypes:types categories:categories];
-		
-		[[UIApplication sharedApplication] registerUserNotificationSettings:mySettings];
-    }
+    // MPN Registration: first prepare an action for user notifications
+    UIMutableUserNotificationAction *viewAction= [[UIMutableUserNotificationAction alloc] init];
+    viewAction.identifier= @"VIEW_IDENTIFIER";
+    viewAction.title= @"View Stock Details";
+    viewAction.destructive= NO;
+    viewAction.authenticationRequired= NO;
+    
+    // Now prepare a category for user notifications
+    UIMutableUserNotificationCategory *stockPriceCategory= [[UIMutableUserNotificationCategory alloc] init];
+    stockPriceCategory.identifier = @"STOCK_PRICE_CATEGORY";
+    [stockPriceCategory setActions:@[viewAction] forContext:UIUserNotificationActionContextDefault];
+    [stockPriceCategory setActions:@[viewAction] forContext:UIUserNotificationActionContextMinimal];
+    
+    NSSet *categories= [NSSet setWithObjects:stockPriceCategory, nil];
+    
+    // Now register for user notifications
+    UIUserNotificationType types= UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert;
+    UIUserNotificationSettings *mySettings= [UIUserNotificationSettings settingsForTypes:types categories:categories];
+    
+    [[UIApplication sharedApplication] registerUserNotificationSettings:mySettings];
 	
 	// Let the StockList View Controller handle any pending MPN
 	NSDictionary *mpn= [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];

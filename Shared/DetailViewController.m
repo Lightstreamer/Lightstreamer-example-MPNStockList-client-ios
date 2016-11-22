@@ -102,6 +102,7 @@
 }
 
 - (void) viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
 	
 	// Reset size of chart
 	[_chartController.view setFrame:CGRectMake(0.0, 0.0, _detailView.chartBackgroundView.frame.size.width, _detailView.chartBackgroundView.frame.size.height)];
@@ -120,6 +121,7 @@
 }
 
 - (void) viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
 	
 	// Unregister from control center notifications
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:NOTIFICATION_APP_MPN object:nil];
