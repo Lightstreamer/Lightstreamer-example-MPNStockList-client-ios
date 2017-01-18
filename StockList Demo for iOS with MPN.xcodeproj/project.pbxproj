@@ -494,6 +494,7 @@
 				);
 				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.lightstreamer.ios.stocklist;
+				PROVISIONING_PROFILE = "d6568ba2-fbdc-426c-bc6f-f54b541cee09";
 				PROVISIONING_PROFILE_SPECIFIER = "LS StockList Development Profile";
 			};
 			name = Debug;
@@ -517,6 +518,7 @@
 				);
 				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.lightstreamer.ios.stocklist;
+				PROVISIONING_PROFILE = "5258628e-5e46-4aaa-bdc6-4eece744e943";
 				PROVISIONING_PROFILE_SPECIFIER = "LS StockList Distribution Profile";
 				VALIDATE_PRODUCT = YES;
 			};
