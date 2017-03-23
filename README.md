@@ -9,7 +9,7 @@ A simpler version, without mobile push notifications support, is also available:
 ## Live Demo
 
 [![screenshot](screenshot_newlarge.png)](https://itunes.apple.com/us/app/lightstreamer-stock-list-apns/id430328811?mt=8)<br>
-###[![](http://demos.lightstreamer.com/site/img/play.png) View live demo](https://itunes.apple.com/us/app/lightstreamer-stock-list-apns/id430328811?mt=8)<br>
+### [![](http://demos.lightstreamer.com/site/img/play.png) View live demo](https://itunes.apple.com/us/app/lightstreamer-stock-list-apns/id430328811?mt=8)<br>
 
 ## Details
 
