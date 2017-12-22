@@ -2,9 +2,9 @@
 
 <!-- START DESCRIPTION lightstreamer-example-mpnstocklist-client-ios -->
 
-This project contains an example of an application for iPhone and iPad that employs the [Lightstreamer iOS Client library](http://www.lightstreamer.com/docs/client_ios_api/index.html), with use of mobile push notifications (MPN).
+This project contains an example of an application for iPhone and iPad that employs the [Lightstreamer iOS Client library version 1.4.x](http://www.lightstreamer.com/docs/client_ios_api/index.html), with use of mobile push notifications (MPN).
 
-A simpler version, without mobile push notifications support, is also available: [Lightstreamer - Stock-List Demo - iOS Client](https://github.com/Lightstreamer/Lightstreamer-example-StockList-client-ios).
+A simpler version, without mobile push notifications support, is also available: [Lightstreamer - Stock-List Demo - iOS Client](https://github.com/Lightstreamer/Lightstreamer-example-StockList-client-ios/tree/latest-for-client-1.x).
 
 ## Live Demo
 
@@ -29,33 +29,33 @@ A full Xcode project specification, ready for compilation of the app sources, is
 
 Before you can build this demo, you should complete this project with the Lighstreamer iOS Client library. Follow these steps:
 
-* Drop into the `Lightstreamer client for iOS/lib` folder of this project the *Lightstreamer_iOS_client.a* file from the `/DOCS-SDKs/sdk_client_ios/lib` of [Lightstreamer distribution version 6.0 or greater](http://www.lightstreamer.com/download).
-* Drop into the `Lightstreamer client for iOS/include` folder of this project all the include files from the `/DOCS-SDKs/sdk_client_ios/include` of [Lightstreamer distribution version 6.0 or greater](http://www.lightstreamer.com/download).
+* Drop into the `Lightstreamer client for iOS/lib` folder of this project the *Lightstreamer_iOS_client.a* file from the `/DOCS-SDKs/sdk_client_ios/lib` of [Lightstreamer distribution version 6.x](http://www.lightstreamer.com/download).
+* Drop into the `Lightstreamer client for iOS/include` folder of this project all the include files from the `/DOCS-SDKs/sdk_client_ios/include` of [Lightstreamer distribution version 6.x](http://www.lightstreamer.com/download).
 
 Done this, the project should compile with no errors.
 
 ### Compile and Run
 
-A full local deploy of this app requires a Lightstreamer Server 6.0 or greater installation with appropriate Mobile Push Notifications (MPN) module configuration. A detailed step by step guide for setting up the server and configuring the client is available in the README of the following project:
+A full local deploy of this app requires a Lightstreamer Server 6.x installation with appropriate Mobile Push Notifications (MPN) module configuration. A detailed step by step guide for setting up the server and configuring the client is available in the README of the following project:
 
-* [Lightstreamer - MPN Stock-List Demo Metadata - Java Adapter](https://github.com/Lightstreamer/Lightstreamer-example-MPNStockListMetadata-adapter-java)
+* [Lightstreamer - MPN Stock-List Demo Metadata - Java Adapter](https://github.com/Lightstreamer/Lightstreamer-example-MPNStockListMetadata-adapter-java/tree/for-server-6)
 
 ## See Also
 
 ### Lightstreamer Adapters Needed by This Demo Client
 
 * [Lightstreamer - Stock- List Demo - Java Adapter](https://github.com/Lightstreamer/Lightstreamer-example-Stocklist-adapter-java)
-* [Lightstreamer - MPN Stock-List Demo Metadata - Java Adapter](https://github.com/Lightstreamer/Lightstreamer-example-MPNStockListMetadata-adapter-java)
+* [Lightstreamer - MPN Stock-List Demo Metadata - Java Adapter](https://github.com/Lightstreamer/Lightstreamer-example-MPNStockListMetadata-adapter-java/tree/for-server-6)
 
 ### Related Projects
 
 * [Lightstreamer - Stock-List Demos - HTML Clients](https://github.com/Lightstreamer/Lightstreamer-example-Stocklist-client-javascript)
 * [Lightstreamer - Stock-List Demo - iOS Client](https://github.com/Lightstreamer/Lightstreamer-example-StockList-client-ios)
-* [Lightstreamer - Stock-List Demo with GCM Push Notifications - Android Client](https://github.com/Lightstreamer/Lightstreamer-example-MPNStockList-client-android)
+* [Lightstreamer - Stock-List Demo with Mobile Notifications - Android Client](https://github.com/Lightstreamer/Lightstreamer-example-MPNStockList-client-android)
 * [Lightstreamer - Basic Stock-List Demo - OS X Client](https://github.com/Lightstreamer/Lightstreamer-example-StockList-client-osx)
 * [Lightstreamer - Basic Stock-List Demo - Windows Phone Client](https://github.com/Lightstreamer/Lightstreamer-example-StockList-client-winphone)
 
 ## Lightstreamer Compatibility Notes
 
-* Compatible with Lightstreamer iOS Client API version 1.4 to 1.4.3. Not yet compatible with Lightstreamer iOS Client API Unified version.
-* For Lightstreamer Allegro (+ iOS Client API support), Presto, Vivace, version 6.0 or greater.
+* Compatible with Lightstreamer iOS Client API version 1.4 to 1.4.5. Not compatible with Lightstreamer iOS Client API Unified version.
+* For Lightstreamer Allegro (+ iOS Client API support), Presto, Vivace, version 6.x.
