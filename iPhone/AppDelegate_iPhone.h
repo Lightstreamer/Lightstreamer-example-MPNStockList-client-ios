@@ -28,10 +28,6 @@
 
 	UINavigationController *_navController;
 	StockListViewController *_stockListController;
-	
-	dispatch_queue_t _backgroundQueue;
-
-	BOOL _registrationForMPNSucceeded;
 }
 
 
@@ -40,7 +36,6 @@
 
 @property (nonatomic, strong) IBOutlet UIWindow *window;
 @property (nonatomic, readonly) StockListViewController *stockListController;
-@property (nonatomic, readonly) BOOL registrationForMPNSucceeded;
 
 
 @end

@@ -30,10 +30,6 @@
 	UISplitViewController *_splitController;
 	StockListViewController *_stockListController;
 	DetailViewController *_detailController;
-	
-	dispatch_queue_t _backgroundQueue;
-
-	BOOL _registrationForMPNSucceeded;
 }
 
 
@@ -43,7 +39,6 @@
 @property (nonatomic, strong) IBOutlet UIWindow *window;
 @property (nonatomic, readonly) StockListViewController *stockListController;
 @property (nonatomic, readonly) DetailViewController *detailController;
-@property (nonatomic, readonly) BOOL registrationForMPNSucceeded;
 
 
 @end

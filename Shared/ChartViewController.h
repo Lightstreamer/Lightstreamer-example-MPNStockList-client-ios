@@ -49,6 +49,7 @@
 - (void) clearChartWithMin:(float)min max:(float)max time:(NSTimeInterval)time value:(float)value;
 
 - (ChartThreshold *) addThreshold:(float)value;
+- (ChartThreshold *) findThreshold:(float)value;
 - (void) removeThreshold:(ChartThreshold *)threshold;
 - (void) clearThresholds;
 
@@ -56,8 +57,7 @@
 #pragma mark -
 #pragma mark Updates from Lightstreamer
 
-- (void) itemDidUpdateWithInfo:(LSUpdateInfo *)updateInfo;
-
+- (void) itemDidUpdate:(LSItemUpdate *)itemUpdate;
 
 
 @end

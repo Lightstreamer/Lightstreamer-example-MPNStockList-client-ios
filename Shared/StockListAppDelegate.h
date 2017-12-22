@@ -28,7 +28,6 @@
 #pragma mark -
 #pragma mark Properties
 
-@property (nonatomic, readonly) BOOL registrationForMPNSucceeded;
 @property (nonatomic, readonly) StockListViewController *stockListController;
 
 

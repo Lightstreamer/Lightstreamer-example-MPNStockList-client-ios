@@ -18,6 +18,7 @@
 //
 
 #import "Connector.h"
+#import "StockListAppDelegate.h"
 #import "Constants.h"
 
 
@@ -47,7 +48,9 @@ static Connector *__sharedInstace= nil;
 - (id) init {
 	if ((self = [super init])) {
 		
-		// Nothing to do
+        // Initialization
+        _client= [[LSLightstreamerClient alloc] initWithServerAddress:PUSH_SERVER_URL adapterSet:ADAPTER_SET];
+        [_client addDelegate:self];
 	}
 	
 	return self;
@@ -58,93 +61,150 @@ static Connector *__sharedInstace= nil;
 #pragma mark Operations
 
 - (void) connect {
-	if (!_client)
-		_client= [LSClient client];
+    NSLog(@"Connector: connecting...");
+    
+    [_client connect];
+}
 
-	@try {
-		NSLog(@"Connector: connecting to Lightstreamer Server...");
-		
-		LSConnectionInfo *connectionInfo= [LSConnectionInfo connectionInfoWithPushServerURL:PUSH_SERVER_URL
-																	   pushServerControlURL:nil
-																					   user:nil
-																				   password:nil
-																					adapter:ADAPTER_SET];
+- (void) subscribe:(LSSubscription *)subscription {
+    NSLog(@"Connector: subscribing...");
+    
+    [_client subscribe:subscription];
+}
 
-		[_client openConnectionWithInfo:connectionInfo delegate:self];
-		
-		NSLog(@"Connector: connected");
+- (void) unsubscribe:(LSSubscription *)subscription {
+    NSLog(@"Connector: unsubscribing...");
+    
+    [_client unsubscribe:subscription];
+}
 
-	} @catch (NSException *e) {
-		NSLog(@"Connector: exception caught while connecting: %@", e);
-	}
+- (void) registerDevice:(NSData *)deviceToken {
+    NSLog(@"Connector: registering device...");
+    
+    NSString *token= [[[deviceToken description]
+                       stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"<>"]]
+                      stringByReplacingOccurrencesOfString:@" " withString:@""];
+    
+    LSMPNDevice *device= [[LSMPNDevice alloc] initWithDeviceToken:token];
+    [device addDelegate:self];
+    
+    [_client registerForMPN:device];
+}
+
+- (void) resetMPNBadge {
+    NSLog(@"Connector: resetting badge...");
+    
+    [_client resetMPNBadge];
+}
+
+- (void) subscribeMPN:(LSMPNSubscription *)mpnSubscription {
+    NSLog(@"Connector: subscribing MPN...");
+    
+    [_client subscribeMPN:mpnSubscription coalescing:YES];
+}
+
+- (void) unsubscribeMPN:(LSMPNSubscription *)mpnSubscription {
+    NSLog(@"Connector: unsubscribing MPN...");
+    
+    [_client unsubscribeMPN:mpnSubscription];
+}
+
+- (void) unsubscribeTriggeredMPNs {
+    NSLog(@"Connector: unsubscribing triggered MPNs...");
+
+    [_client unsubscribeMultipleMPN:@"TRIGGERED"];
+}
+
+- (NSArray *) MPNSubscriptions {
+    return _client.MPNSubscriptions;
 }
 
 
 #pragma mark -
 #pragma mark Properties
 
-@synthesize client= _client;
+@dynamic connected;
+
+- (BOOL) isConnected {
+    return [_client.status hasPrefix:@"CONNECTED:"];
+}
+
+@dynamic connectionStatus;
+
+- (NSString *) connectionStatus {
+    return _client.status;
+}
+
+@synthesize mpnEnabled= _mpnEnabled;
 
 
 #pragma mark -
-#pragma mark Methods of LSConnectionDelegate
+#pragma mark Methods of LSClientDelegate
 
-- (void) clientConnection:(LSClient *)client didStartSessionWithPolling:(BOOL)polling {
-	NSLog(@"Connector: session started with polling: %@", (polling ? @"YES" : @"NO"));
-	
-	[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_CONN_STATUS object:self];
+- (void) client:(nonnull LSLightstreamerClient *)client didChangeProperty:(nonnull NSString *)property {
+    NSLog(@"Connector: property changed: %@", property);
 }
 
-- (void) clientConnection:(LSClient *)client didChangeActivityWarningStatus:(BOOL)warningStatus {
-	NSLog(@"Connector: activity warning status changed: %@", (warningStatus ? @"ON" : @"OFF"));
-	
-	[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_CONN_STATUS object:self];
+- (void) client:(nonnull LSLightstreamerClient *)client didChangeStatus:(nonnull NSString *)status {
+    NSLog(@"Connector: status changed: %@", status);
+    
+    if ([status hasPrefix:@"CONNECTED:"]) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_CONN_STATUS object:self];
+        
+    } else if ([status hasPrefix:@"DISCONNECTED:"]) {
+        
+        // The LSLightstreamerClient will reconnect automatically in this case.
+        [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_CONN_STATUS object:self];
+        
+    } else if ([status isEqualToString:@"DISCONNECTED"]) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_CONN_STATUS object:self];
+        
+        // In this case the session has been forcibly closed by the server,
+        // the LSLightstreamerClient will not automatically reconnect, notify the observers
+        [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_CONN_ENDED object:self];
+    }
 }
 
-- (void) clientConnectionDidEstablish:(LSClient *)client {
-	NSLog(@"Connector: connection established");
+- (void) client:(nonnull LSLightstreamerClient *)client didReceiveServerError:(NSInteger)errorCode withMessage:(nonnull NSString *)errorMessage {
+    NSLog(@"Connector: server error: %ld - %@", (long) errorCode, errorMessage);
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_CONN_STATUS object:self];
 }
 
-- (void) clientConnectionDidClose:(LSClient *)client {
-	NSLog(@"Connector: connection closed");
-	
-	[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_CONN_STATUS object:self];
-	
-	// This event is called just by manually closing the connection,
-	// never happens in this example.
+
+#pragma mark -
+#pragma mark Methods of LSMPNDeviceDelegate
+
+- (void) mpnDeviceDidRegister:(nonnull LSMPNDevice *)device {
+    NSLog(@"Connector: device registered");
+    
+    _mpnEnabled= YES;
+    
+    // Notify listeners the registration for MPN did succeed
+    [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_MPN_ENABLED object:self];
+    
+    // Reset the badge
+    [_client resetMPNBadge];
 }
 
-- (void) clientConnection:(LSClient *)client didEndWithCause:(int)cause {
-	NSLog(@"Connector: connection ended with cause: %d", cause);
-	
-	[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_CONN_STATUS object:self];
-	
-	// In this case the session has been forcibly closed by the server,
-	// the LSClient will not automatically reconnect, notify the observers
-	[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_CONN_ENDED object:self];
+- (void) mpnDevice:(nonnull LSMPNDevice *)device didFailRegistrationWithErrorCode:(NSInteger)code message:(nullable NSString *)message {
+    NSLog(@"Connector: registration error: %ld - %@", (long) code, message);
 }
 
-- (void) clientConnection:(LSClient *)client didReceiveDataError:(LSPushServerException *)error {
-	NSLog(@"Connector: data error: %@", error);
+- (void) mpnDeviceDidUpdateSubscriptions:(nonnull LSMPNDevice *)device {
+    NSLog(@"Connector: subscriptions updated");
+    
+    // Notify listeners the MPN subscription cache has been updated
+    [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_MPN_UPDATED object:self];
 }
 
-- (void) clientConnection:(LSClient *)client didReceiveServerFailure:(LSPushServerException *)failure {
-	NSLog(@"Connector: server failure: %@", failure);
-	
-	[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_CONN_STATUS object:self];
-	
-	// The LSClient will reconnect automatically in this case.
+- (void) mpnDeviceDidResetBadge:(nonnull LSMPNDevice *)device {
+    NSLog(@"Connector: badge reset");
 }
 
-- (void) clientConnection:(LSClient *)client didReceiveConnectionFailure:(LSPushConnectionException *)failure {
-	NSLog(@"Connector: connection failure: %@", failure);
-	
-	[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_CONN_STATUS object:self];
-	
-	// The LSClient will reconnect automatically in this case.
+- (void) device:(nonnull LSMPNDevice *)device didFailBadgeResetWithErrorCode:(NSInteger)code message:(nullable NSString *)message {
+    NSLog(@"Connector: badge reset error: %ld - %@", (long) code, message);
 }
-
-- (void) clientConnection:(LSClient *)client isAboutToSendURLRequest:(NSMutableURLRequest *)urlRequest {}
 
 
 @end

@@ -20,8 +20,10 @@
 #import <Foundation/Foundation.h>
 
 
-@interface Connector : NSObject <LSConnectionDelegate> {
-	LSClient *_client;
+@interface Connector : NSObject <LSClientDelegate, LSMPNDeviceDelegate> {
+    LSLightstreamerClient *_client;
+    
+    BOOL _mpnEnabled;
 }
 
 
@@ -36,11 +38,25 @@
 
 - (void) connect;
 
+- (void) subscribe:(LSSubscription *)subscription;
+- (void) unsubscribe:(LSSubscription *)subscription;
+
+- (void) registerDevice:(NSData *)deviceToken;
+- (void) resetMPNBadge;
+
+- (void) subscribeMPN:(LSMPNSubscription *)mpnSubscription;
+- (void) unsubscribeMPN:(LSMPNSubscription *)mpnSubscription;
+- (void) unsubscribeTriggeredMPNs;
+
+- (NSArray *) MPNSubscriptions;
+
 
 #pragma mark -
 #pragma mark Properties
 
-@property (nonatomic, readonly) LSClient *client;
+@property (nonatomic, readonly, getter=isConnected) BOOL connected;
+@property (nonatomic, readonly) NSString *connectionStatus;
+@property (nonatomic, readonly, getter=isMpnEnabled) BOOL mpnEnabled;
 
 
 @end

@@ -23,13 +23,11 @@
 @class StockListView;
 @class DetailViewController;
 
-@interface StockListViewController : UITableViewController <LSTableDelegate, UIPopoverControllerDelegate, UINavigationControllerDelegate> {
+@interface StockListViewController : UITableViewController <LSSubscriptionDelegate, UIPopoverControllerDelegate, UINavigationControllerDelegate> {
 	StockListView *_stockListView;
 	
 	BOOL _subscribed;
-	LSSubscribedTableKey *_tableKey;
-	
-	dispatch_queue_t _backgroundQueue;
+    LSSubscription *_subscription;
 
 	NSIndexPath *_selectedRow;
 	

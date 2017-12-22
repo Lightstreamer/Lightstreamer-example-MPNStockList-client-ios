@@ -39,10 +39,10 @@
 #define DEVICE_IPAD                ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad)
 #define DEVICE_XIB(xib)            (DEVICE_IPAD ? [xib stringByAppendingString:@"_iPad"] : [xib stringByAppendingString:@"_iPhone"])
 
-#define NOTIFICATION_APP_MPN       (@"LSAppDidRegisterForMPN")
 #define NOTIFICATION_CONN_STATUS   (@"LSConnectionStatusChanged")
 #define NOTIFICATION_CONN_ENDED    (@"LSConnectionEnded")
-#define NOTIFICATION_CACHE_UPDATED (@"LSMPNSubscriptionCacheUpdated")
+#define NOTIFICATION_MPN_ENABLED   (@"LSMPNEnabled")
+#define NOTIFICATION_MPN_UPDATED   (@"LSMPNSubscriptionCacheUpdated")
 
 #define ALERT_DELAY                (0.250)
 #define FLASH_DURATION             (0.150)

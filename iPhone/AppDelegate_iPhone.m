@@ -19,6 +19,7 @@
 
 #import "AppDelegate_iPhone.h"
 #import "StockListViewController.h"
+#import "Connector.h"
 #import "Constants.h"
 
 
@@ -32,13 +33,7 @@
     application.statusBarStyle= UIStatusBarStyleLightContent;
 	
 	// Uncomment for detailed logging
-//	[LSLog enableSourceType:LOG_SRC_CLIENT];
-//	[LSLog enableSourceType:LOG_SRC_SESSION];
-//	[LSLog enableSourceType:LOG_SRC_STATE_MACHINE];
-//	[LSLog enableSourceType:LOG_SRC_URL_DISPATCHER];
-
-	// Queue for background execution
-	_backgroundQueue= dispatch_queue_create("backgroundQueue", 0);
+//  [LSLightstreamerClient setLoggerProvider:[[LSConsoleLoggerProvider alloc] initWithLevel:LSConsoleLogLevelDebug]];
 
 	// Create the user interface
 	_stockListController= [[StockListViewController alloc] init];
@@ -82,17 +77,15 @@
 	
 	// Reset the app's icon badge
 	application.applicationIconBadgeNumber= 0;
-	
-	dispatch_async(_backgroundQueue, ^() {
-		
-		// Notify Lightstreamer that the app's icon badge has been reset
-		[LSClient applicationMPNBadgeReset];
-	});
+    
+    if ([[Connector sharedConnector] isMpnEnabled]) {
+        
+        // Notify Lightstreamer that the app's icon badge has been reset
+        [[Connector sharedConnector] resetMPNBadge];
+    }
 }
 
 - (void) application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings {
-	// This method is iOS >= 8.0 only
-	
 	UIUserNotificationType allowedTypes= [notificationSettings types];
 	
 	NSLog(@"AppDelegate: registration for user notifications succeeded with types: %d", (int) allowedTypes);
@@ -102,32 +95,10 @@
 }
 
 - (void) application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
-	_registrationForMPNSucceeded= YES;
-	
-	dispatch_async(_backgroundQueue, ^() {
-		
-		// Register device token with LS Client (will be stored for later use)
-		LSMPNTokenStatus tokenStatus= [LSClient registrationForMPNSucceededWithToken:deviceToken];
-		switch (tokenStatus) {
-			case LSMPNTokenStatusFirstUse:
-				NSLog(@"AppDelegate: device token first use");
-				break;
-				
-			case LSMPNTokenStatusNotChanged:
-				NSLog(@"AppDelegate: device token not changed");
-				break;
-				
-			case LSMPNTokenStatusChanged:
-				
-				// If device token changed, you may need to resubmit your MPN subscriptions
-				// (after a device token is invalidated, the Server keeps them for up to a week)
-				NSLog(@"AppDelegate: device token changed");
-				break;
-		}
-	});
-	
-	// Notify listeners the registration for MPN did succeed
-	[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_APP_MPN object:self];
+    NSLog(@"AppDelegate: registration for remote notifications succeeded with token: %@", deviceToken);
+    
+    // Register device token with LS Client (will be stored for later use)
+    [[Connector sharedConnector] registerDevice:deviceToken];
 }
 
 - (void) application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
@@ -147,7 +118,6 @@
 
 @synthesize window= _window;
 @synthesize stockListController= _stockListController;
-@synthesize registrationForMPNSucceeded= _registrationForMPNSucceeded;
 
 
 @end
