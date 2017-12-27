@@ -2,7 +2,7 @@
 
 <!-- START DESCRIPTION lightstreamer-example-mpnstocklist-client-ios -->
 
-This project contains an example of an application for iPhone and iPad that employs the [Lightstreamer iOS Client library](https://www.lightstreamer.com/api/ls-ios-client/latest/), with use of mobile push notifications (MPN).
+This project contains an example of an application for iPhone and iPad that employs the [Lightstreamer iOS Client library](https://www.lightstreamer.com/api/ls-ios-client/latest_4_0/), with use of mobile push notifications (MPN).
 
 A simpler version, without mobile push notifications support, is also available: [Lightstreamer - Stock-List Demo - iOS Client](https://github.com/Lightstreamer/Lightstreamer-example-StockList-client-ios).
 
@@ -27,7 +27,9 @@ A full Xcode project specification, ready for compilation of the app sources, is
 
 ### Getting Started
 
-Before you can build this demo, you need to install CocoaPods to handle the project dependency on the Lightstreamer iOS client library. Follow these steps:
+Before you can build this demo, you need to install CocoaPods to handle the project dependency on the Lightstreamer iOS client library (see also the Lightstreamer Compatiblity Notes below).
+
+Follow these steps:
 
 * open a terminal and run the following command:
 
