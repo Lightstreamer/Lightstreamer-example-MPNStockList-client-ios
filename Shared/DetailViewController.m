@@ -98,11 +98,15 @@
 	[self disableMPNControls];
 }
 
-- (void) viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-	
+- (void) viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+
 	// Reset size of chart
 	[_chartController.view setFrame:CGRectMake(0.0, 0.0, _detailView.chartBackgroundView.frame.size.width, _detailView.chartBackgroundView.frame.size.height)];
+}
+
+- (void) viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
 		
 	// We use the notification center to know when the app
 	// has been successfully registered for MPN and when
@@ -530,9 +534,9 @@
 		
 		double pctChange= [[_itemData objectForKey:@"pct_change"] doubleValue];
 		if (pctChange > 0.0)
-			_detailView.dirImage.image= [UIImage imageNamed:@"Arrow-up.png"];
+			_detailView.dirImage.image= [UIImage imageNamed:@"Arrow-up"];
 		else if (pctChange < 0.0)
-			_detailView.dirImage.image= [UIImage imageNamed:@"Arrow-down.png"];
+			_detailView.dirImage.image= [UIImage imageNamed:@"Arrow-down"];
 		else
 			_detailView.dirImage.image= nil;
 		
