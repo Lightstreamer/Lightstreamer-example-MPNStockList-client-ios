@@ -250,7 +250,12 @@
         [builder body:@"Stock ${stock_name} is now ${last_price}"];
         [builder sound:@"Default"];
         [builder badgeWithString:@"AUTO"];
-        [builder customData:@{@"item": item}];
+        [builder customData:@{@"item": item,
+                              @"stock_name": @"${stock_name}",
+                              @"last_price": @"${last_price}",
+                              @"pct_change": @"${pct_change}",
+                              @"time": @"${time}",
+                              @"open_price": @"${open_price}"}];
         [builder category:@"STOCK_PRICE_CATEGORY"];
 
         // Prepare the MPN subscription
@@ -605,10 +610,15 @@
     // Prepare the notification format, with a custom data
     // to match the item and threshold against the MPN list
     LSMPNBuilder *builder= [[LSMPNBuilder alloc] init];
-    [builder body:greaterThan ? @"Stock ${stock_name} rised above ${last_price}" : @"Stock ${stock_name} dropped below ${last_price}"];
+    [builder body:[NSString stringWithFormat:greaterThan ? @"Stock ${stock_name} rised above %.2f" : @"Stock ${stock_name} dropped below %.2f", threshold.value]];
     [builder sound:@"Default"];
     [builder badgeWithString:@"AUTO"];
     [builder customData:@{@"item": item,
+                          @"stock_name": @"${stock_name}",
+                          @"last_price": @"${last_price}",
+                          @"pct_change": @"${pct_change}",
+                          @"time": @"${time}",
+                          @"open_price": @"${open_price}",
                           @"threshold": [NSString stringWithFormat:@"%.2f", threshold.value],
                           @"subID": @"${LS_MPN_subscription_ID}"}];
     [builder category:@"STOCK_PRICE_CATEGORY"];

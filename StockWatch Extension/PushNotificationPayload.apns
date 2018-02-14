@@ -1,0 +1,19 @@
+{
+    "aps": {
+        "alert": {
+            "body": "Stock Anduct rised above 3.00"
+        },
+        "badge": "1",
+        "sound": "Default",
+        "category": "STOCK_PRICE_CATEGORY"
+    },
+    
+    "item": "item1",
+    "stock_name": "Anduct",
+    "last_price": "3.01",
+    "pct_change": "6.67",
+    "time": "17:32:07",
+    "open_price": "2.77",
+    "threshold": "3.00",
+    "subID": "b861eb15-a6b6-444d-b943-5dacd781176d"
+}

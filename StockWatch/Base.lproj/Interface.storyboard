@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="13771" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="AgC-eL-Hgc">
+    <device id="watch38" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="watchOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="13756"/>
+    </dependencies>
+    <scenes>
+        <!--Interface Controller-->
+        <scene sceneID="aou-V4-d1y">
+            <objects>
+                <controller id="AgC-eL-Hgc" customClass="InterfaceController">
+                    <items>
+                        <picker height="90" alignment="left" indicatorMode="shownWhileFocused" id="5kr-IC-dHo">
+                            <connections>
+                                <action selector="stockSelected:" destination="AgC-eL-Hgc" id="v5i-Yc-14W"/>
+                            </connections>
+                        </picker>
+                        <separator alignment="left" id="jd7-nq-mfy"/>
+                        <group width="1" alignment="left" id="6er-Cm-JXE" userLabel="Price Group">
+                            <items>
+                                <label alignment="left" text="--.--" id="Ati-V9-UN1">
+                                    <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
+                                </label>
+                                <imageView width="20" height="20" alignment="center" contentMode="center" id="Bb8-61-1Ph"/>
+                                <label alignment="right" text="-.--%" id="HNl-9t-W9g">
+                                    <color key="textColor" red="0.0" green="0.81119130710659904" blue="0.024706812953315706" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
+                                </label>
+                            </items>
+                        </group>
+                        <group width="1" alignment="left" id="OH7-oZ-oAe">
+                            <items>
+                                <label alignment="left" text="--.--" id="4FD-2o-HqE">
+                                    <fontDescription key="font" style="UICTFontTextStyleFootnote"/>
+                                </label>
+                                <label alignment="right" text="--:--:--" id="iCa-Fb-pSG">
+                                    <fontDescription key="font" style="UICTFontTextStyleFootnote"/>
+                                </label>
+                            </items>
+                        </group>
+                    </items>
+                    <connections>
+                        <outlet property="changeLabel" destination="HNl-9t-W9g" id="emB-5I-Q28"/>
+                        <outlet property="dirImage" destination="Bb8-61-1Ph" id="x0c-Vv-k9s"/>
+                        <outlet property="lastLabel" destination="Ati-V9-UN1" id="XQ7-R5-Vb2"/>
+                        <outlet property="openLabel" destination="4FD-2o-HqE" id="vPZ-CU-aIQ"/>
+                        <outlet property="priceGroup" destination="6er-Cm-JXE" id="4x5-Pt-b3o"/>
+                        <outlet property="stockPicker" destination="5kr-IC-dHo" id="JXv-DS-Ewc"/>
+                        <outlet property="timeLabel" destination="iCa-Fb-pSG" id="5zJ-gE-DJg"/>
+                    </connections>
+                </controller>
+            </objects>
+            <point key="canvasLocation" x="220" y="345"/>
+        </scene>
+        <!--Static Notification Interface Controller-->
+        <scene sceneID="AEw-b0-oYE">
+            <objects>
+                <notificationController id="YCC-NB-fut">
+                    <items>
+                        <label alignment="left" text="Message" numberOfLines="2" id="IdU-wH-bcW"/>
+                    </items>
+                    <notificationCategory key="notificationCategory" identifier="STOCK_PRICE_CATEGORY" id="JfB-70-Muf"/>
+                    <connections>
+                        <outlet property="notificationAlertLabel" destination="IdU-wH-bcW" id="JKC-fr-R95"/>
+                        <segue destination="4sK-HA-Art" kind="relationship" relationship="dynamicNotificationInterface" id="kXh-Jw-8B1"/>
+                    </connections>
+                </notificationController>
+            </objects>
+            <point key="canvasLocation" x="220" y="643"/>
+        </scene>
+        <!--Notification Controller-->
+        <scene sceneID="ZPc-GJ-vnh">
+            <objects>
+                <controller id="4sK-HA-Art" customClass="NotificationController">
+                    <items>
+                        <label alignment="left" text="Message" numberOfLines="2" id="UPi-4Z-ila"/>
+                        <separator alignment="left" id="CrD-e4-GXa"/>
+                        <group width="1" alignment="left" id="oO4-iA-NJq" userLabel="Price Group">
+                            <items>
+                                <label alignment="left" text="--.--" id="O1d-Pk-QZE">
+                                    <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
+                                </label>
+                                <imageView width="20" height="20" alignment="center" contentMode="center" id="PUj-Sk-Caf"/>
+                                <label alignment="right" text="-.--%" id="13Q-GJ-8LG">
+                                    <color key="textColor" red="0.0" green="0.81119130709999998" blue="0.02470681295" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
+                                </label>
+                            </items>
+                        </group>
+                        <group width="1" alignment="left" id="zhQ-pu-rKn">
+                            <items>
+                                <label alignment="left" text="--.--" id="Ufd-DC-Tw0">
+                                    <fontDescription key="font" style="UICTFontTextStyleFootnote"/>
+                                </label>
+                                <label alignment="right" text="--:--:--" id="ko1-BW-cRT">
+                                    <fontDescription key="font" style="UICTFontTextStyleFootnote"/>
+                                </label>
+                            </items>
+                        </group>
+                    </items>
+                    <connections>
+                        <outlet property="changeLabel" destination="13Q-GJ-8LG" id="Dej-bt-7qL"/>
+                        <outlet property="dirImage" destination="PUj-Sk-Caf" id="Hc3-y6-gx7"/>
+                        <outlet property="lastLabel" destination="O1d-Pk-QZE" id="rJp-ZC-ZFr"/>
+                        <outlet property="messageLabel" destination="UPi-4Z-ila" id="hQr-sH-VVe"/>
+                        <outlet property="openLabel" destination="Ufd-DC-Tw0" id="AWy-3m-5Sw"/>
+                        <outlet property="timeLabel" destination="ko1-BW-cRT" id="NZ6-GL-YeA"/>
+                    </connections>
+                </controller>
+            </objects>
+            <point key="canvasLocation" x="468" y="643"/>
+        </scene>
+    </scenes>
+</document>

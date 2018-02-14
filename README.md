@@ -2,7 +2,7 @@
 
 <!-- START DESCRIPTION lightstreamer-example-mpnstocklist-client-ios -->
 
-This project contains an example of an application for iPhone and iPad that employs the [Lightstreamer iOS Client library](https://www.lightstreamer.com/api/ls-ios-client/latest_4_0/), with use of mobile push notifications (MPN).
+This project contains an example of an application for iPhone and iPad that employs the [Lightstreamer iOS Client library](https://www.lightstreamer.com/api/ls-ios-client/latest_4_0/), with use of mobile push notifications (MPN). The application also includes a WatchKit extension that employs the [Lightstreamer watchOS Client library](https://www.lightstreamer.com/api/ls-watchos-client/latest/).
 
 A simpler version, without mobile push notifications support, is also available: [Lightstreamer - Stock-List Demo - iOS Client](https://github.com/Lightstreamer/Lightstreamer-example-StockList-client-ios).
 
