@@ -2,7 +2,7 @@
 
 <!-- START DESCRIPTION lightstreamer-example-mpnstocklist-client-ios -->
 
-This project contains an example of an application for iPhone and iPad that employs the [Lightstreamer iOS Client library](https://www.lightstreamer.com/api/ls-ios-client/latest_4_0/), with use of mobile push notifications (MPN). The application also includes a WatchKit extension that employs the [Lightstreamer watchOS Client library](https://www.lightstreamer.com/api/ls-watchos-client/latest/).
+This project contains an example of an application for iPhone and iPad that employs the [Lightstreamer iOS Client library](https://www.lightstreamer.com/api/ls-ios-client/latest/), with use of mobile push notifications (MPN). The application also includes a WatchKit extension that employs the [Lightstreamer watchOS Client library](https://www.lightstreamer.com/api/ls-watchos-client/latest/).
 
 A simpler version, without mobile push notifications support, is also available: [Lightstreamer - Stock-List Demo - iOS Client](https://github.com/Lightstreamer/Lightstreamer-example-StockList-client-ios).
 
@@ -49,7 +49,7 @@ Done this, open the workspace with Xcode and it should compile with no errors. I
 
 ### Compile and Run
 
-A full local deploy of this app requires a Lightstreamer Server 7.0 b2 or greater installation with appropriate Mobile Push Notifications (MPN) module configuration. A detailed step by step guide for setting up the server and configuring the client is available in the README of the following project:
+A full local deploy of this app requires a Lightstreamer Server 7.0 or greater installation with appropriate Mobile Push Notifications (MPN) module configuration. A detailed step by step guide for setting up the server and configuring the client is available in the README of the following project:
 
 * [Lightstreamer - MPN Stock-List Demo Metadata - Java Adapter](https://github.com/Lightstreamer/Lightstreamer-example-MPNStockListMetadata-adapter-java)
 
@@ -71,5 +71,5 @@ A full local deploy of this app requires a Lightstreamer Server 7.0 b2 or greate
 ## Lightstreamer Compatibility Notes
 
 * Code compatible with Lightstreamer iOS and watchOS Client Libraries version 4.0.0 or newer.
-* For Lightstreamer Allegro (+ iOS/watchOS Client API support), Presto, Vivace, version 7.0 b2 or greater.
+* For Lightstreamer Server version 7.0 or greater. Ensure that iOS and/or watchOS Client API is supported by Lightstreamer Server license configuration, depending on where the demo will be run.
 * For a version of this example compatible with Lightstreamer iOS Client API version 1.x, please refer to [this tag](https://github.com/Lightstreamer/Lightstreamer-example-MPNStockList-client-ios/tree/latest-for-client-1.x).
