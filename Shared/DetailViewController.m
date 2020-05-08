@@ -320,7 +320,7 @@
 	dispatch_async(dispatch_get_main_queue(), ^{
 
 		// Forward the update to the chart
-		[_chartController itemDidUpdate:itemUpdate];
+        [self->_chartController itemDidUpdate:itemUpdate];
 		
 		// Update the view
 		[self updateView];
@@ -355,15 +355,15 @@
         if ([builder.customData objectForKey:@"threshold"]) {
             
             // It's the subscription of a threshold, remove it if still present
-            ChartThreshold *threshold= [_chartController findThreshold:[[builder.customData objectForKey:@"threshold"] floatValue]];
+            ChartThreshold *threshold= [self->_chartController findThreshold:[[builder.customData objectForKey:@"threshold"] floatValue]];
             if (threshold)
-                [_chartController removeThreshold:threshold];
+                [self->_chartController removeThreshold:threshold];
 
         } else {
             
             // It's the main price subscription, reset the switch
-            _priceMpnSubscription= nil;
-            _detailView.mpnSwitch.on= NO;
+            self->_priceMpnSubscription= nil;
+            self->_detailView.mpnSwitch.on= NO;
         }
     });
 }
@@ -391,7 +391,7 @@
 									case 0:
 										 
 										// Cleanup
-										[_chartController removeThreshold:threshold];
+                                        [self->_chartController removeThreshold:threshold];
 										break;
 
 									case 1:
@@ -415,7 +415,7 @@
 									case 0:
 										 
 										// Cleanup
-										[_chartController removeThreshold:threshold];
+                                        [self->_chartController removeThreshold:threshold];
 										break;
 										 
 									case 1:

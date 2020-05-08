@@ -444,7 +444,7 @@
 		// If the detail controller is visible, set the item on the detail view controller,
 		// so that it can do its own subscription
 		if (needsSubscription && (DEVICE_IPAD || ([self.navigationController.viewControllers count] > 1)))
-			[_detailController changeItem:[TABLE_ITEMS objectAtIndex:_selectedRow.row]];
+            [self->_detailController changeItem:[TABLE_ITEMS objectAtIndex:self->_selectedRow.row]];
 	});
 	
 	// Check if we need to subscribe
@@ -521,7 +521,7 @@
 									 
 									// Replicate the effect of a user tap on the appropriate cell,
 									// will end up in a call to changeItem on the detail controller
-									[self tableView:_stockListView.table willSelectRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+                                    [self tableView:self->_stockListView.table willSelectRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
 									break;
 							}
 						}
