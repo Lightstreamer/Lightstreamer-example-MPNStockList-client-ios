@@ -91,9 +91,12 @@ static Connector *__sharedInstace= nil;
 - (void) registerDevice:(NSData *)deviceToken {
     NSLog(@"Connector: registering device...");
     
-    NSString *token= [[[deviceToken description]
-                       stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"<>"]]
-                      stringByReplacingOccurrencesOfString:@" " withString:@""];
+    NSUInteger length= deviceToken.length;
+    const unsigned char *buffer = deviceToken.bytes;
+
+    NSMutableString *token= [NSMutableString stringWithCapacity:(length * 2)];
+    for (int i= 0; i < length; i++)
+        [token appendFormat:@"%02x", buffer[i]];
     
     LSMPNDevice *device= [[LSMPNDevice alloc] initWithDeviceToken:token];
     [device addDelegate:self];
