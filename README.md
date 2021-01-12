@@ -50,4 +50,5 @@ A full local deploy of this app requires a Lightstreamer Server 7.0 or greater i
 
 * Code compatible with Lightstreamer iOS and watchOS Client Libraries version 4.0.0 or newer.
 * For Lightstreamer Server version 7.0 or greater. Ensure that iOS and/or watchOS Client API is supported by Lightstreamer Server license configuration, depending on where the demo will be run.
+* For a version of this example compatible with Lightstreamer iOS Client API version 2.x up to 4.2.1, please refer to [this tag](https://github.com/Lightstreamer/Lightstreamer-example-MPNStockList-client-ios/tree/latest-for-cocoapods).
 * For a version of this example compatible with Lightstreamer iOS Client API version 1.x, please refer to [this tag](https://github.com/Lightstreamer/Lightstreamer-example-MPNStockList-client-ios/tree/latest-for-client-1.x).
