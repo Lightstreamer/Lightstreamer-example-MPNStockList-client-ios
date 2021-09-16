@@ -15,9 +15,9 @@
 		2860E32E111B888700E27156 /* AppDelegate_iPad.m in Sources */ = {isa = PBXBuildFile; fileRef = 2860E32C111B888700E27156 /* AppDelegate_iPad.m */; };
 		2860E32F111B888700E27156 /* MainWindow_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2860E32D111B888700E27156 /* MainWindow_iPad.xib */; };
 		288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765FC0DF74451002DB57D /* CoreGraphics.framework */; };
-		578EFE9926F35292003207E3 /* Lightstreamer_iOS_Client in Frameworks */ = {isa = PBXBuildFile; productRef = 960F2F1E25A4A6B000388E2B /* Lightstreamer_iOS_Client */; };
-		578EFE9A26F35292003207E3 /* Lightstreamer_watchOS_Client in Frameworks */ = {isa = PBXBuildFile; productRef = 960F2F2525A4A72E00388E2B /* Lightstreamer_watchOS_Client */; };
 		578EFE9C26F35356003207E3 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578EFE9B26F35356003207E3 /* Utils.swift */; };
+		578EFE9D26F36A8B003207E3 /* Lightstreamer_iOS_Client in Frameworks */ = {isa = PBXBuildFile; productRef = 960F2F1E25A4A6B000388E2B /* Lightstreamer_iOS_Client */; };
+		578EFE9E26F36A8B003207E3 /* Lightstreamer_watchOS_Client in Frameworks */ = {isa = PBXBuildFile; productRef = 960F2F2525A4A72E00388E2B /* Lightstreamer_watchOS_Client */; };
 		8C00FE641884390B009A4F34 /* Connector.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C00FE631884390B009A4F34 /* Connector.m */; };
 		8C2E353F1FFD42BE00D6020F /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8C2E353E1FFD42BE00D6020F /* Media.xcassets */; };
 		8C2F040F1869D90500012B38 /* SpecialEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C2F040E1869D90500012B38 /* SpecialEffects.m */; };
@@ -26,7 +26,7 @@
 		8C558FB820221B310093A3C2 /* StockWatch Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 8C558FB720221B310093A3C2 /* StockWatch Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		8C558FBE20221B310093A3C2 /* InterfaceController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C558FBD20221B310093A3C2 /* InterfaceController.m */; };
 		8C558FC120221B310093A3C2 /* ExtensionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C558FC020221B310093A3C2 /* ExtensionDelegate.swift */; };
-		8C558FC420221B310093A3C2 /* NotificationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C558FC320221B310093A3C2 /* NotificationController.m */; };
+		8C558FC420221B310093A3C2 /* NotificationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C558FC320221B310093A3C2 /* NotificationController.swift */; };
 		8C558FC620221B310093A3C2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8C558FC520221B310093A3C2 /* Assets.xcassets */; };
 		8C558FCB20221B310093A3C2 /* StockWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 8C558FAB20221B310093A3C2 /* StockWatch.app */; };
 		8C558FD4202222DE0093A3C2 /* Connector.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C00FE631884390B009A4F34 /* Connector.m */; };
@@ -143,8 +143,7 @@
 		8C558FBC20221B310093A3C2 /* InterfaceController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = InterfaceController.h; sourceTree = "<group>"; };
 		8C558FBD20221B310093A3C2 /* InterfaceController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = InterfaceController.m; sourceTree = "<group>"; };
 		8C558FC020221B310093A3C2 /* ExtensionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionDelegate.swift; sourceTree = "<group>"; };
-		8C558FC220221B310093A3C2 /* NotificationController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NotificationController.h; sourceTree = "<group>"; };
-		8C558FC320221B310093A3C2 /* NotificationController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NotificationController.m; sourceTree = "<group>"; };
+		8C558FC320221B310093A3C2 /* NotificationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationController.swift; sourceTree = "<group>"; };
 		8C558FC520221B310093A3C2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8C558FC720221B310093A3C2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8C558FC820221B310093A3C2 /* PushNotificationPayload.apns */ = {isa = PBXFileReference; lastKnownFileType = text; path = PushNotificationPayload.apns; sourceTree = "<group>"; };
@@ -210,7 +209,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8C660151186DB6D1008DB46F /* CoreText.framework in Frameworks */,
-				578EFE9926F35292003207E3 /* Lightstreamer_iOS_Client in Frameworks */,
+				578EFE9D26F36A8B003207E3 /* Lightstreamer_iOS_Client in Frameworks */,
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
 				288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */,
@@ -221,7 +220,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				578EFE9A26F35292003207E3 /* Lightstreamer_watchOS_Client in Frameworks */,
+				578EFE9E26F36A8B003207E3 /* Lightstreamer_watchOS_Client in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -381,8 +380,7 @@
 				8C558FBC20221B310093A3C2 /* InterfaceController.h */,
 				8C558FBD20221B310093A3C2 /* InterfaceController.m */,
 				8C558FC020221B310093A3C2 /* ExtensionDelegate.swift */,
-				8C558FC220221B310093A3C2 /* NotificationController.h */,
-				8C558FC320221B310093A3C2 /* NotificationController.m */,
+				8C558FC320221B310093A3C2 /* NotificationController.swift */,
 				8CB90ABF202366CB00BC9ED8 /* WatchSpecialEffects.swift */,
 				8C558FC520221B310093A3C2 /* Assets.xcassets */,
 				8C558FC720221B310093A3C2 /* Info.plist */,
@@ -616,7 +614,7 @@
 				8C558FBE20221B310093A3C2 /* InterfaceController.m in Sources */,
 				578EFE9C26F35356003207E3 /* Utils.swift in Sources */,
 				8CB90AC0202366CB00BC9ED8 /* WatchSpecialEffects.swift in Sources */,
-				8C558FC420221B310093A3C2 /* NotificationController.m in Sources */,
+				8C558FC420221B310093A3C2 /* NotificationController.swift in Sources */,
 				F9474EB8B3EED9B432BC9515 /* StockWatch_Demo_for_watchOS_Prefix.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -870,7 +868,7 @@
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
-				WATCHOS_DEPLOYMENT_TARGET = 2.0;
+				WATCHOS_DEPLOYMENT_TARGET = 3.1;
 			};
 			name = Debug;
 		};
@@ -920,7 +918,7 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
 				VALIDATE_PRODUCT = YES;
-				WATCHOS_DEPLOYMENT_TARGET = 2.0;
+				WATCHOS_DEPLOYMENT_TARGET = 3.1;
 			};
 			name = Release;
 		};
