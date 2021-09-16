@@ -18,7 +18,6 @@
 //
 
 #import "InterfaceController.h"
-#import "WatchSpecialEffects.h"
 #import "Connector.h"
 #import "Constants.h"
 
@@ -266,7 +265,7 @@
             else
                 color= [UIColor whiteColor];
             
-            [WatchSpecialEffects flashGroup:self.priceGroup withColor:color];
+            [WatchSpecialEffects flash:self.priceGroup with:color];
 
             [itemUpdated setObject:[NSNumber numberWithBool:NO] forKey:@"last_price"];
         }
