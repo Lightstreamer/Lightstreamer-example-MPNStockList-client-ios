@@ -20,6 +20,8 @@
 
 import Foundation
 import WatchKit
+import Lightstreamer_watchOS_Client
+import Connector
 
 class InterfaceController: WKInterfaceController, LSSubscriptionDelegate {
     private var subscribed = false
@@ -59,8 +61,8 @@ class InterfaceController: WKInterfaceController, LSSubscriptionDelegate {
 
         // We use the notification center to know when the
         // connection changes status
-        NotificationCenter.default.addObserver(self, selector: #selector(connectionStatusChanged), name: NOTIFICATION_CONN_STATUS, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(connectionEnded), name: NOTIFICATION_CONN_ENDED, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(connectionStatusChanged), name: NSNotification.Name(NOTIFICATION_CONN_STATUS), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(connectionEnded), name: NSNotification.Name(NOTIFICATION_CONN_ENDED), object: nil)
 
         // Fill the picker
         updatePicker()
