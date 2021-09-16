@@ -22,7 +22,7 @@
 		8C558FB120221B310093A3C2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8C558FB020221B310093A3C2 /* Assets.xcassets */; };
 		8C558FB820221B310093A3C2 /* StockWatch Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 8C558FB720221B310093A3C2 /* StockWatch Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		8C558FBE20221B310093A3C2 /* InterfaceController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C558FBD20221B310093A3C2 /* InterfaceController.m */; };
-		8C558FC120221B310093A3C2 /* ExtensionDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C558FC020221B310093A3C2 /* ExtensionDelegate.m */; };
+		8C558FC120221B310093A3C2 /* ExtensionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C558FC020221B310093A3C2 /* ExtensionDelegate.swift */; };
 		8C558FC420221B310093A3C2 /* NotificationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C558FC320221B310093A3C2 /* NotificationController.m */; };
 		8C558FC620221B310093A3C2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8C558FC520221B310093A3C2 /* Assets.xcassets */; };
 		8C558FCB20221B310093A3C2 /* StockWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 8C558FAB20221B310093A3C2 /* StockWatch.app */; };
@@ -138,8 +138,7 @@
 		8C558FB720221B310093A3C2 /* StockWatch Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "StockWatch Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8C558FBC20221B310093A3C2 /* InterfaceController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = InterfaceController.h; sourceTree = "<group>"; };
 		8C558FBD20221B310093A3C2 /* InterfaceController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = InterfaceController.m; sourceTree = "<group>"; };
-		8C558FBF20221B310093A3C2 /* ExtensionDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExtensionDelegate.h; sourceTree = "<group>"; };
-		8C558FC020221B310093A3C2 /* ExtensionDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExtensionDelegate.m; sourceTree = "<group>"; };
+		8C558FC020221B310093A3C2 /* ExtensionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionDelegate.swift; sourceTree = "<group>"; };
 		8C558FC220221B310093A3C2 /* NotificationController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NotificationController.h; sourceTree = "<group>"; };
 		8C558FC320221B310093A3C2 /* NotificationController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NotificationController.m; sourceTree = "<group>"; };
 		8C558FC520221B310093A3C2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -376,8 +375,7 @@
 			children = (
 				8C558FBC20221B310093A3C2 /* InterfaceController.h */,
 				8C558FBD20221B310093A3C2 /* InterfaceController.m */,
-				8C558FBF20221B310093A3C2 /* ExtensionDelegate.h */,
-				8C558FC020221B310093A3C2 /* ExtensionDelegate.m */,
+				8C558FC020221B310093A3C2 /* ExtensionDelegate.swift */,
 				8C558FC220221B310093A3C2 /* NotificationController.h */,
 				8C558FC320221B310093A3C2 /* NotificationController.m */,
 				8CB90ABE202366CB00BC9ED8 /* WatchSpecialEffects.h */,
@@ -608,7 +606,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8C558FC120221B310093A3C2 /* ExtensionDelegate.m in Sources */,
+				8C558FC120221B310093A3C2 /* ExtensionDelegate.swift in Sources */,
 				8C558FD4202222DE0093A3C2 /* Connector.m in Sources */,
 				8C558FBE20221B310093A3C2 /* InterfaceController.m in Sources */,
 				8CB90AC0202366CB00BC9ED8 /* WatchSpecialEffects.m in Sources */,
