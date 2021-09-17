@@ -142,6 +142,8 @@
 		578EFF0126F49886003207E3 /* StatusView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StatusView.swift; path = Shared/StatusView.swift; sourceTree = "<group>"; };
 		578EFF0226F49886003207E3 /* StockListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StockListViewController.swift; path = Shared/StockListViewController.swift; sourceTree = "<group>"; };
 		578EFF0326F49886003207E3 /* StatusViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StatusViewController.swift; path = Shared/StatusViewController.swift; sourceTree = "<group>"; };
+		57971FB626F4C4B700058B04 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		57971FB726F4C4B700058B04 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		8C2E353E1FFD42BE00D6020F /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Media.xcassets; path = Shared/Media.xcassets; sourceTree = "<group>"; };
 		8C4AA1C41F7AA89800BE6BE5 /* Lightstreamer StockList.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Lightstreamer StockList.entitlements"; sourceTree = "<group>"; };
 		8C558FAB20221B310093A3C2 /* StockWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StockWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -279,6 +281,8 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				57971FB726F4C4B700058B04 /* LICENSE */,
+				57971FB626F4C4B700058B04 /* README.md */,
 				578EFEF726F4932A003207E3 /* LightstreamerClient */,
 				2860E32A111B888700E27156 /* iPad */,
 				2860E324111B887F00E27156 /* iPhone */,
