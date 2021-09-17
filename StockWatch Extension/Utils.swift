@@ -31,3 +31,6 @@ let FLASH_DURATION = 0.150
 
 let DARK_GREEN_COLOR = UIColor(red: 0.0000, green: 0.6000, blue: 0.2000, alpha: 1.0)
 let RED_COLOR = UIColor(red: 1.0000, green: 0.0706, blue: 0.0000, alpha: 1.0)
+
+let GREEN_COLOR = UIColor(red: 0.5647, green: 0.9294, blue: 0.5373, alpha: 1.0)
+let ORANGE_COLOR = UIColor(red: 0.9843, green: 0.7216, blue: 0.4510, alpha: 1.0)

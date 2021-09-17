@@ -21,14 +21,14 @@
 import Foundation
 import WatchKit
 import Lightstreamer_watchOS_Client
-import Connector
 
 class InterfaceController: WKInterfaceController, LSSubscriptionDelegate {
     private var subscribed = false
     private var subscription: LSSubscription?
     private var selectedItem = 0
-    private var itemUpdated: [AnyHashable : Any]?
-    private var itemData: [AnyHashable : Any]?
+    private var itemUpdated: [Int : [String:Bool]]?
+    private var itemData: [Int : [String:String?]]?
+    let lockQueue = DispatchQueue(label: "com.lightstreamer.InterfaceController")
 
     // MARK: -
     // MARK: Stock selection
@@ -56,8 +56,8 @@ class InterfaceController: WKInterfaceController, LSSubscriptionDelegate {
 
         // Multiple-item data structures: each item has a second-level dictionary.
         // They store fields data and which fields have been updated
-        itemData = [AnyHashable : Any](minimumCapacity: NUMBER_OF_ITEMS)
-        itemUpdated = [AnyHashable : Any](minimumCapacity: NUMBER_OF_ITEMS)
+        itemData = [Int : [String:String?]](minimumCapacity: NUMBER_OF_ITEMS)
+        itemUpdated = [Int : [String:Bool]](minimumCapacity: NUMBER_OF_ITEMS)
 
         // We use the notification center to know when the
         // connection changes status
@@ -134,24 +134,23 @@ class InterfaceController: WKInterfaceController, LSSubscriptionDelegate {
     func subscription(_ subscription: LSSubscription, didUpdateItem itemUpdate: LSItemUpdate) {
         // This method is always called from a background thread
 
-        let itemPosition = itemUpdate.itemPos
+        let itemPosition = Int(itemUpdate.itemPos)
         var updatePicker = false
 
         // Check and prepare the item's data structures
-        var item: [AnyHashable : Any]? = nil
-        var itemUpdated: [AnyHashable : Any]? = nil
-        let lockQueue = DispatchQueue(label: "itemData")
+        var item: [String : String?]? = nil
+        var itemUpdated: [String : Bool]? = nil
         lockQueue.sync {
-            item = itemData?[NSNumber(value: UInt((itemPosition - 1)))] as? [AnyHashable : Any]
+            item = itemData?[itemPosition - 1]
             if item == nil {
-                item = [AnyHashable : Any](minimumCapacity: NUMBER_OF_DETAIL_FIELDS)
-                itemData?[NSNumber(value: UInt((itemPosition - 1)))] = item
+                item = [String : String?](minimumCapacity: NUMBER_OF_DETAIL_FIELDS)
+                itemData?[itemPosition - 1] = item
             }
 
-            itemUpdated = self.itemUpdated?[NSNumber(value: UInt((itemPosition - 1)))] as? [AnyHashable : Any]
+            itemUpdated = self.itemUpdated?[itemPosition - 1]
             if itemUpdated == nil {
-                itemUpdated = [AnyHashable : Any](minimumCapacity: NUMBER_OF_DETAIL_FIELDS)
-                self.itemUpdated?[NSNumber(value: UInt((itemPosition - 1)))] = itemUpdated
+                itemUpdated = [String : Bool](minimumCapacity: NUMBER_OF_DETAIL_FIELDS)
+                self.itemUpdated?[itemPosition - 1] = itemUpdated
             }
         }
 
@@ -160,7 +159,7 @@ class InterfaceController: WKInterfaceController, LSSubscriptionDelegate {
 
             // Save previous last price to choose blink color later
             if fieldName == "last_price" {
-                previousLastPrice = (item?[fieldName] as? NSNumber)?.doubleValue ?? 0.0
+                previousLastPrice = Double((item?[fieldName] ?? "0") ?? "0") ?? 0.0
             }
 
             // Store the updated field in the item's data structures
@@ -169,11 +168,11 @@ class InterfaceController: WKInterfaceController, LSSubscriptionDelegate {
             if value != "" {
                 item?[fieldName] = value
             } else {
-                item?[fieldName] = NSNull()
+                item?[fieldName] = nil
             }
 
             if itemUpdate.isValueChanged(withFieldName: fieldName) {
-                itemUpdated?[fieldName] = NSNumber(value: true)
+                itemUpdated?[fieldName] = true
 
                 // If the stock name changed we also have to reload the picker
                 if fieldName == "stock_name" {
@@ -183,11 +182,16 @@ class InterfaceController: WKInterfaceController, LSSubscriptionDelegate {
         }
 
         // Evaluate the update color and store it in the item's data structures
-        let currentLastPrice = itemUpdate.value(withFieldName: "last_price").doubleValue
+        let currentLastPrice = Double(itemUpdate.value(withFieldName: "last_price") ?? "0") ?? 0
         if currentLastPrice >= previousLastPrice {
             item?["color"] = "green"
         } else {
             item?["color"] = "orange"
+        }
+        
+        lockQueue.sync {
+            self.itemData?[itemPosition - 1] = item
+            self.itemUpdated?[itemPosition - 1] = itemUpdated
         }
 
         let updateData = selectedItem == (itemPosition - 1)
@@ -216,11 +220,10 @@ class InterfaceController: WKInterfaceController, LSSubscriptionDelegate {
 
         var pickerItems: [AnyHashable] = []
 
-        let lockQueue = DispatchQueue(label: "itemData")
         lockQueue.sync {
             for i in 0..<NUMBER_OF_ITEMS {
-                let item = itemData?[NSNumber(value: UInt(i))] as? [AnyHashable : Any]
-                let stockName = item?["stock_name"] as? String
+                let item = itemData?[i]
+                let stockName = item?["stock_name"]
 
                 let pickerItem = WKPickerItem()
                 pickerItem.title = stockName ?? "Loading item\(i + 1)..."
@@ -235,19 +238,18 @@ class InterfaceController: WKInterfaceController, LSSubscriptionDelegate {
         // This method is always called from the main thread
 
         // Retrieve the item's data structures
-        var item: [AnyHashable : Any]? = nil
-        var itemUpdated: [AnyHashable : Any]? = nil
-        let lockQueue = DispatchQueue(label: "itemData")
+        var item: [String : String?]? = nil
+        var itemUpdated: [String : Bool]? = nil
         lockQueue.sync {
-            item = itemData?[NSNumber(value: selectedItem)] as? [AnyHashable : Any]
-            itemUpdated = self.itemUpdated?[NSNumber(value: selectedItem)] as? [AnyHashable : Any]
+            item = itemData?[selectedItem]
+            itemUpdated = self.itemUpdated?[selectedItem]
         }
 
         if let item = item {
 
             // Update the labels
-            lastLabel.text = item["last_price"]
-            if (itemUpdated?["last_price"] as? NSNumber)?.boolValue ?? false {
+            lastLabel.setText(item["last_price"] ?? "")
+            if itemUpdated?["last_price"] ?? false {
 
                 // Flash the price-dir-change group appropriately
                 let colorName = item["color"] as? String
@@ -262,25 +264,30 @@ class InterfaceController: WKInterfaceController, LSSubscriptionDelegate {
 
                 WatchSpecialEffects.flash(priceGroup, with: color)
 
-                itemUpdated?["last_price"] = NSNumber(value: false)
+                itemUpdated?["last_price"] = false
             }
 
-            timeLabel.text = item["time"]
-            openLabel.text = item["open_price"]
+            timeLabel.setText(item["time"] ?? "")
+            openLabel.setText(item["open_price"] ?? "")
 
-            let pctChange = (item["pct_change"] as? NSNumber)?.doubleValue ?? 0.0
+            let pctChange = Double((item["pct_change"] ?? "0") ?? "0") ?? 0.0
             if pctChange > 0.0 {
-                dirImage.image = UIImage(named: "Arrow-up")
+                dirImage.setImage(UIImage(named: "Arrow-up"))
             } else if pctChange < 0.0 {
-                dirImage.image = UIImage(named: "Arrow-down")
+                dirImage.setImage(UIImage(named: "Arrow-down"))
             } else {
-                dirImage.image = nil
+                dirImage.setImage(nil)
             }
 
-            if let object = item["pct_change"] {
-                changeLabel.text = String(format: "%@%%", object)
+            if let object = item["pct_change"] ?? "0" {
+                changeLabel.setText(String(format: "%@%%", object))
             }
-            changeLabel.textColor = (((item["pct_change"] as? NSNumber)?.doubleValue ?? 0.0 >= 0.0) ? DARK_GREEN_COLOR : RED_COLOR)
+            changeLabel.setTextColor((Double((item["pct_change"] ?? "0") ?? "0") ?? 0.0 >= 0.0) ? DARK_GREEN_COLOR : RED_COLOR)
+            
+            lockQueue.sync {
+                self.itemData?[selectedItem] = item
+                self.itemUpdated?[selectedItem] = itemUpdated
+            }
         }
     }
 }
