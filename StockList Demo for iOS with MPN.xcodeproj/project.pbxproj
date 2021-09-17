@@ -26,8 +26,6 @@
 		578EFEF426F492BE003207E3 /* InfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578EFEE926F492BD003207E3 /* InfoViewController.swift */; };
 		578EFEF526F492BE003207E3 /* ChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578EFEEA26F492BD003207E3 /* ChartView.swift */; };
 		578EFEF626F492C7003207E3 /* Connector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578EFEE326F492BD003207E3 /* Connector.swift */; };
-		578EFEF926F49347003207E3 /* LightstreamerClient in Frameworks */ = {isa = PBXBuildFile; productRef = 578EFEF826F49347003207E3 /* LightstreamerClient */; };
-		578EFEFB26F49351003207E3 /* LightstreamerClient in Frameworks */ = {isa = PBXBuildFile; productRef = 578EFEFA26F49351003207E3 /* LightstreamerClient */; };
 		578EFEFC26F4958F003207E3 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578EFEE126F492BD003207E3 /* Constants.swift */; };
 		578EFF0426F49886003207E3 /* StockListAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578EFEFD26F49885003207E3 /* StockListAppDelegate.swift */; };
 		578EFF0526F49886003207E3 /* StockListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578EFEFE26F49885003207E3 /* StockListCell.swift */; };
@@ -36,6 +34,8 @@
 		578EFF0826F49886003207E3 /* StatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578EFF0126F49886003207E3 /* StatusView.swift */; };
 		578EFF0926F49886003207E3 /* StockListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578EFF0226F49886003207E3 /* StockListViewController.swift */; };
 		578EFF0A26F49886003207E3 /* StatusViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578EFF0326F49886003207E3 /* StatusViewController.swift */; };
+		57971FBA26F4C52F00058B04 /* LightstreamerClient in Frameworks */ = {isa = PBXBuildFile; productRef = 57971FB926F4C52F00058B04 /* LightstreamerClient */; };
+		57971FBC26F4C55E00058B04 /* LightstreamerClient in Frameworks */ = {isa = PBXBuildFile; productRef = 57971FBB26F4C55E00058B04 /* LightstreamerClient */; };
 		8C2E353F1FFD42BE00D6020F /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8C2E353E1FFD42BE00D6020F /* Media.xcassets */; };
 		8C558FAF20221B310093A3C2 /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8C558FAD20221B310093A3C2 /* Interface.storyboard */; };
 		8C558FB120221B310093A3C2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8C558FB020221B310093A3C2 /* Assets.xcassets */; };
@@ -134,7 +134,6 @@
 		578EFEE826F492BD003207E3 /* DetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DetailViewController.swift; path = Shared/DetailViewController.swift; sourceTree = "<group>"; };
 		578EFEE926F492BD003207E3 /* InfoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = InfoViewController.swift; path = Shared/InfoViewController.swift; sourceTree = "<group>"; };
 		578EFEEA26F492BD003207E3 /* ChartView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChartView.swift; path = Shared/ChartView.swift; sourceTree = "<group>"; };
-		578EFEF726F4932A003207E3 /* LightstreamerClient */ = {isa = PBXFileReference; lastKnownFileType = folder; name = LightstreamerClient; path = ../LightstreamerClient; sourceTree = "<group>"; };
 		578EFEFD26F49885003207E3 /* StockListAppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StockListAppDelegate.swift; path = Shared/StockListAppDelegate.swift; sourceTree = "<group>"; };
 		578EFEFE26F49885003207E3 /* StockListCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StockListCell.swift; path = Shared/StockListCell.swift; sourceTree = "<group>"; };
 		578EFEFF26F49886003207E3 /* SpecialEffects.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SpecialEffects.swift; path = Shared/SpecialEffects.swift; sourceTree = "<group>"; };
@@ -188,7 +187,7 @@
 				8C660151186DB6D1008DB46F /* CoreText.framework in Frameworks */,
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
-				578EFEF926F49347003207E3 /* LightstreamerClient in Frameworks */,
+				57971FBA26F4C52F00058B04 /* LightstreamerClient in Frameworks */,
 				288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -197,7 +196,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				578EFEFB26F49351003207E3 /* LightstreamerClient in Frameworks */,
+				57971FBC26F4C55E00058B04 /* LightstreamerClient in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -283,7 +282,6 @@
 			children = (
 				57971FB726F4C4B700058B04 /* LICENSE */,
 				57971FB626F4C4B700058B04 /* README.md */,
-				578EFEF726F4932A003207E3 /* LightstreamerClient */,
 				2860E32A111B888700E27156 /* iPad */,
 				2860E324111B887F00E27156 /* iPhone */,
 				28EEBF621118D79A00187D67 /* Shared */,
@@ -365,7 +363,7 @@
 			);
 			name = "StockList Demo for iOS with MPN";
 			packageProductDependencies = (
-				578EFEF826F49347003207E3 /* LightstreamerClient */,
+				57971FB926F4C52F00058B04 /* LightstreamerClient */,
 			);
 			productName = "StockList Demo for iOS";
 			productReference = 1D6058910D05DD3D006BFB54 /* Lightstreamer StockList.app */;
@@ -404,7 +402,7 @@
 			);
 			name = "StockWatch Extension";
 			packageProductDependencies = (
-				578EFEFA26F49351003207E3 /* LightstreamerClient */,
+				57971FBB26F4C55E00058B04 /* LightstreamerClient */,
 			);
 			productName = "StockWatch Extension";
 			productReference = 8C558FB720221B310093A3C2 /* StockWatch Extension.appex */;
@@ -453,6 +451,7 @@
 			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* CustomTemplate */;
 			packageReferences = (
+				57971FB826F4C52F00058B04 /* XCRemoteSwiftPackageReference "Lightstreamer-lib-client-swift" */,
 			);
 			productRefGroup = 19C28FACFE9D520D11CA2CBB /* Products */;
 			projectDirPath = "";
@@ -992,13 +991,26 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		57971FB826F4C52F00058B04 /* XCRemoteSwiftPackageReference "Lightstreamer-lib-client-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Lightstreamer/Lightstreamer-lib-client-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = "5.0.0-beta.2";
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
-		578EFEF826F49347003207E3 /* LightstreamerClient */ = {
+		57971FB926F4C52F00058B04 /* LightstreamerClient */ = {
 			isa = XCSwiftPackageProductDependency;
+			package = 57971FB826F4C52F00058B04 /* XCRemoteSwiftPackageReference "Lightstreamer-lib-client-swift" */;
 			productName = LightstreamerClient;
 		};
-		578EFEFA26F49351003207E3 /* LightstreamerClient */ = {
+		57971FBB26F4C55E00058B04 /* LightstreamerClient */ = {
 			isa = XCSwiftPackageProductDependency;
+			package = 57971FB826F4C52F00058B04 /* XCRemoteSwiftPackageReference "Lightstreamer-lib-client-swift" */;
 			productName = LightstreamerClient;
 		};
 /* End XCSwiftPackageProductDependency section */
