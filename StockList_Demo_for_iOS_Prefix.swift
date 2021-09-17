@@ -4,5 +4,5 @@
 //
 
 import Foundation
-import Lightstreamer_iOS_Client
+//import Lightstreamer_iOS_Client
 import UIKit
