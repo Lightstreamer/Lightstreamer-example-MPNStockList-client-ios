@@ -11,7 +11,7 @@
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <customObject id="4" userLabel="App Delegate" customClass="AppDelegate_iPhone">
+        <customObject id="4" userLabel="App Delegate" customClass="AppDelegate_iPhone" customModule="StockList_Demo_for_iOS_with_MPN" customModuleProvider="target">
             <connections>
                 <outlet property="window" destination="2" id="6"/>
             </connections>

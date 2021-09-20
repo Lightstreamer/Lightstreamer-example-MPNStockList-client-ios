@@ -18,7 +18,7 @@
             <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="lightContent"/>
             <simulatedScreenMetrics key="simulatedDestinationMetrics"/>
         </window>
-        <customObject id="6" customClass="AppDelegate_iPad">
+        <customObject id="6" customClass="AppDelegate_iPad" customModule="StockList_Demo_for_iOS_with_MPN" customModuleProvider="target">
             <connections>
                 <outlet property="window" destination="2" id="7"/>
             </connections>
