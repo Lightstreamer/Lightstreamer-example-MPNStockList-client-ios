@@ -358,10 +358,10 @@ class DetailViewController: UIViewController, SubscriptionDelegate, MPNSubscript
             UIAlertView(title: "Error while activating MPN subscription", message: "An error occurred and the MPN subscription could not be activated.", delegate: nil, cancelButtonTitle: "Cancel", otherButtonTitles: "").show()
 
             let builder = MPNBuilder(notificationFormat: mpnSubscription.notificationFormat!)!
-            if builder.customData!["threshold"] != nil {
+            if let ts = builder.customData!["threshold"] as? String {
 
                 // It's the subscription of a threshold, remove it if still present
-                let threshold = chartController?.findThreshold((builder.customData!["threshold"] as? NSNumber)?.floatValue ?? 0.0)
+                let threshold = chartController?.findThreshold(toFloat(ts))
                 if let threshold = threshold {
                     chartController?.remove(threshold)
                 }
