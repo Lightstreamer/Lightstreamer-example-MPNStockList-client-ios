@@ -2,7 +2,7 @@
 
 <!-- START DESCRIPTION lightstreamer-example-mpnstocklist-client-ios -->
 
-This project contains an example of an application for iPhone and iPad that employs the [Lightstreamer Swift Client library](https://www.lightstreamer.com/api/ls-swift-client/latest/), with use of mobile push notifications (MPN). The application also includes a WatchKit extension.
+This project contains an example of an application for iPhone, iPad and Vision Pro that employs the [Lightstreamer Swift Client library](https://www.lightstreamer.com/api/ls-swift-client/latest/), with use of mobile push notifications (MPN). The application also includes a WatchKit extension.
 
 A simpler version, without mobile push notifications support, is also available: [Lightstreamer - Stock-List Demo - iOS Client](https://github.com/Lightstreamer/Lightstreamer-example-StockList-client-ios).
 
@@ -13,7 +13,7 @@ A simpler version, without mobile push notifications support, is also available:
 
 ## Details
 
-This app, compatible with both iPhone and iPad, is a Swift version of the [Stock-List Demos](https://github.com/Lightstreamer/Lightstreamer-example-Stocklist-client-javascript).<br>
+This app, compatible with iPhone, iPad and Vision Pro, is a Swift version of the [Stock-List Demos](https://github.com/Lightstreamer/Lightstreamer-example-Stocklist-client-javascript).<br>
 
 This app uses the <b>Swift Client API for Lightstreamer</b> to handle the communications with Lightstreamer Server. A simple user interface is implemented to display the real-time data received from Lightstreamer Server. Additionally, the user interface provides means to activate and deactivate mobile push notifications for specific stock quotes.<br>
 
@@ -27,7 +27,7 @@ A full Xcode project, ready for compilation of the app sources, is provided. Ple
 
 ### Compile and Run
 
-A full local deploy of this app requires a Lightstreamer Server 7.0 or greater installation with appropriate Mobile Push Notifications (MPN) module configuration. A detailed step by step guide for setting up the server and configuring the client is available in the README of the following project:
+A full local deploy of this app requires a Lightstreamer Server 7.4 or greater installation with appropriate Mobile Push Notifications (MPN) module configuration. A detailed step by step guide for setting up the server and configuring the client is available in the README of the following project:
 
 * [Lightstreamer - MPN Stock-List Demo Metadata - Java Adapter](https://github.com/Lightstreamer/Lightstreamer-example-MPNStockListMetadata-adapter-java)
 
@@ -48,7 +48,7 @@ A full local deploy of this app requires a Lightstreamer Server 7.0 or greater i
 
 ## Lightstreamer Compatibility Notes
 
-* Code compatible with Lightstreamer Swift Library version 6.0 or newer.
-* For Lightstreamer Server version 7.4 or greater. Ensure that iOS and/or watchOS Client SDK is supported by Lightstreamer Server license configuration, depending on where the demo will be run.
+* Code compatible with Lightstreamer Swift Library version 6.1 or newer.
+* For Lightstreamer Server version 7.4 or greater. Ensure that iOS, watchOS and/or visionOS Client SDK is supported by Lightstreamer Server license configuration, depending on where the demo will be run.
 * For a version of this example compatible with Lightstreamer iOS and watchOS Client SDKs versions up to 5, please refer to [this tag](https://github.com/Lightstreamer/Lightstreamer-example-MPNStockList-client-ios/tree/latest-for-client-5.x).
 * For a version of this example compatible with Lightstreamer iOS and watchOS Client SDKs versions up to 4, please refer to [this tag](https://github.com/Lightstreamer/Lightstreamer-example-MPNStockList-client-ios/tree/latest-for-client-4.x).
